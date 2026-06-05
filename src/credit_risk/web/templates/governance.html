@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Model &amp; governance · Credit Risk Engine{% endblock %}
+{% block body %}
+<h1 class="page-title">Model &amp; governance</h1>
+<p class="page-sub">Model provenance, validation metrics, risk policy, and the documentation that supports responsible deployment.</p>
+
+{% if manifest %}
+<div class="card">
+  <h2>Model summary</h2>
+  <div class="grid cols-2">
+    <div>
+      <p><span class="muted">Model name</span><br><b>{{ manifest.model_name }}</b></p>
+      <p><span class="muted">Version</span><br><span class="pill">{{ manifest.version }}</span></p>
+      <p><span class="muted">Created (UTC)</span><br>{{ manifest.created_utc }}</p>
+    </div>
+    <div>
+      <p><span class="muted">Data source</span><br>{{ manifest.data_source }}</p>
+      <p><span class="muted">Rows total</span><br><b>{{ "{:,}".format(manifest.rows_total) }}</b></p>
+      <p><span class="muted">Rows (training)</span><br><b>{{ "{:,}".format(manifest.rows_train) }}</b></p>
+    </div>
+  </div>
+
+  <div class="grid cols-4">
+    <div class="metric">
+      <div class="value">{{ "%.3f"|format(manifest.metrics.auc) }}</div>
+      <div class="label">AUC</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{ "%.3f"|format(manifest.metrics.gini) }}</div>
+      <div class="label">Gini</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{ "%.3f"|format(manifest.metrics.ks) }}</div>
+      <div class="label">KS</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{ "%.3f"|format(manifest.metrics.brier_calibrated) }}</div>
+      <div class="label">Brier (calibrated)</div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="note">No model manifest is available. Train and register a model to populate this page.</div>
+{% endif %}
+
+<div class="card">
+  <h2>Risk bands &amp; policy</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Grade</th>
+        <th>PD upper bound</th>
+        <th>Decision</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for grade, upper, decision in risk_bands %}
+      <tr>
+        <td><span class="grade-{{ grade }}">{{ grade }}</span></td>
+        <td>{% if upper >= 1.0 %}&mdash;{% else %}{{ "%.1f%%"|format(upper * 100) }}{% endif %}</td>
+        <td><span class="tag dec-{{ decision }}">{{ decision }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="muted">A margin around each boundary forces human review near the cut-offs, and any change to the
+  cut-offs requires Credit Risk Committee sign-off.</p>
+</div>
+
+<div class="card">
+  <h2>Model card</h2>
+  <pre class="doc">{{ model_card }}</pre>
+</div>
+
+<div class="card">
+  <h2>Governance</h2>
+  <pre class="doc">{{ governance_doc }}</pre>
+</div>
+
+<div class="note">
+  <b>Honest limitations.</b> This engine is trained on synthetic data, the risk cut-offs are
+  illustrative rather than policy-approved, and fairness testing across protected groups is not yet
+  implemented. Do not use for production credit decisions.
+</div>
+{% endblock %}

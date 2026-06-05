@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Score applicant · Credit Risk Engine{% endblock %}
+{% set labels = {
+  "loan_amount":"Loan amount (£)", "annual_income":"Annual income (£)",
+  "employment_length":"Employment length (yrs)", "debt_to_income":"Debt-to-income",
+  "credit_utilization":"Credit utilisation", "num_delinquencies_2y":"Delinquencies (2y)",
+  "num_open_accounts":"Open accounts", "credit_history_length":"Credit history (yrs)",
+  "num_recent_inquiries":"Recent inquiries (6m)", "loan_term_months":"Loan term (months)",
+  "interest_rate":"Interest rate (APR %)", "home_ownership_code":"Home ownership"} %}
+{% set steps = {"loan_amount":"100","annual_income":"500","debt_to_income":"0.01",
+  "credit_utilization":"0.01","interest_rate":"0.1","employment_length":"0.5",
+  "credit_history_length":"0.5"} %}
+{% block body %}
+<h1 class="page-title">Score an applicant</h1>
+<p class="page-sub">Enter the applicant's details — every field is validated against the model's input contract.</p>
+
+{% if error %}<div class="note">{{ error }}</div>{% endif %}
+
+<form method="post" action="/score">
+  <div class="card">
+    <div class="grid cols-3">
+      {% for f in features %}
+      <div>
+        <label for="{{ f }}">{{ labels[f] }}</label>
+        {% if f == "home_ownership_code" %}
+          <select id="{{ f }}" name="{{ f }}">
+            {% set hv = defaults[f]|int %}
+            <option value="0" {{ 'selected' if hv==0 }}>Rent</option>
+            <option value="1" {{ 'selected' if hv==1 }}>Mortgage</option>
+            <option value="2" {{ 'selected' if hv==2 }}>Own</option>
+          </select>
+        {% elif f == "loan_term_months" %}
+          <select id="{{ f }}" name="{{ f }}">
+            {% set tv = defaults[f]|int %}
+            <option value="36" {{ 'selected' if tv==36 }}>36</option>
+            <option value="60" {{ 'selected' if tv==60 }}>60</option>
+          </select>
+        {% else %}
+          <input id="{{ f }}" name="{{ f }}" type="number" step="{{ steps.get(f, '1') }}"
+                 value="{{ defaults[f] }}" required>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <p><button class="btn btn-primary" type="submit">Score applicant</button></p>
+  </div>
+</form>
+
+{% if result %}
+{% set d = result.decision %}
+<div class="grid cols-4">
+  <div class="metric">
+    <span class="value"><span class="tag dec-{{ d.decision }}">{{ d.decision }}</span></span>
+    <span class="label">Decision</span>
+  </div>
+  <div class="metric">
+    <span class="value grade-{{ d.risk_grade }}">{{ d.risk_grade }}</span>
+    <span class="label">Risk grade</span>
+  </div>
+  <div class="metric">
+    <span class="value">{{ "%.1f"|format(d.pd*100) }}%</span>
+    <span class="label">Probability of default</span>
+  </div>
+  <div class="metric">
+    <span class="value">{{ "%.0f"|format(d.confidence*100) }}%</span>
+    <span class="label">Confidence</span>
+  </div>
+</div>
+
+{% if d.human_review %}
+<div class="note">Near a decision boundary — this application has been routed for human review.</div>
+{% endif %}
+
+<div class="grid cols-2">
+  <div class="card">
+    <h3>Increases risk</h3>
+    <table class="table">
+      <thead><tr><th>Factor</th><th>Value</th><th>Impact</th></tr></thead>
+      <tbody>
+        {% for r in result.reasons.increases_risk %}
+        <tr><td>{{ r.label }}</td><td>{{ r.value }}</td><td>{{ r.impact }}</td></tr>
+        {% else %}
+        <tr><td class="muted" colspan="3">None</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Reduces risk</h3>
+    <table class="table">
+      <thead><tr><th>Factor</th><th>Value</th><th>Impact</th></tr></thead>
+      <tbody>
+        {% for r in result.reasons.reduces_risk %}
+        <tr><td>{{ r.label }}</td><td>{{ r.value }}</td><td>{{ r.impact }}</td></tr>
+        {% else %}
+        <tr><td class="muted" colspan="3">None</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if result.credit_memo %}
+<div class="card">
+  <h3>Credit memo <span class="pill">source: {{ result.credit_memo.source }}</span></h3>
+  <p>{{ result.credit_memo.memo }}</p>
+</div>
+{% endif %}
+{% endif %}
+
+<p class="muted">Probabilities are calibrated; risk-band cut-offs are illustrative
+and require Credit Risk Committee sign-off.</p>
+{% endblock %}

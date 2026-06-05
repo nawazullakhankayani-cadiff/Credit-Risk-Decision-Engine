@@ -1,0 +1,24 @@
+# Operational config (illustrative). Risk bands and margins must be ratified by
+# the Credit Risk Committee against the firm's risk appetite — see docs/GOVERNANCE.md.
+model:
+  primary: xgboost          # falls back to logistic baseline if xgboost unavailable
+  calibration: isotonic
+training:
+  rows: 30000
+  test_size: 0.2
+  valid_size: 0.2
+  random_state: 42
+risk_bands:                 # grade: [pd_upper_exclusive, decision]
+  A: [0.03, APPROVE]
+  B: [0.07, APPROVE]
+  C: [0.13, REFER]
+  D: [0.22, REFER]
+  E: [0.35, DECLINE]
+  F: [1.01, DECLINE]
+decision_margin: 0.02       # PD distance to a boundary that forces human review
+llm:
+  provider: auto            # auto|openai|anthropic|template
+  model: gpt-4o-mini
+monitoring:
+  psi_moderate: 0.10
+  psi_significant: 0.25

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Monitoring · Credit Risk Engine{% endblock %}
+{% block body %}
+<h1 class="page-title">Monitoring</h1>
+<p class="page-sub">Live telemetry for the scoring service — decision volume, latency, cumulative LLM cost and input drift.</p>
+
+{% if not mon.has_data %}
+<div class="card">
+  <p class="muted">No telemetry yet. Score some applicants on the
+    <a href="/score">Score applicant</a> page or run a
+    <a href="/batch">batch upload</a>, then return here to see live latency, cost and decision metrics.</p>
+</div>
+{% else %}
+<div class="grid cols-4">
+  <div class="metric">
+    <div class="value">{{ mon.scored }}</div>
+    <div class="label">Decisions scored</div>
+  </div>
+  <div class="metric">
+    <div class="value">{{ mon.p50 }}</div>
+    <div class="label">p50 latency ms</div>
+  </div>
+  <div class="metric">
+    <div class="value">{{ mon.p95 }}</div>
+    <div class="label">p95 latency ms</div>
+  </div>
+  <div class="metric">
+    <div class="value">${{ mon.cost }}</div>
+    <div class="label">Cumulative LLM cost USD</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Decision mix</h2>
+  {{ charts.decision_mix | safe }}
+</div>
+
+{% if charts.latency %}
+<div class="card">
+  <h2>Latency over time</h2>
+  {{ charts.latency | safe }}
+</div>
+{% endif %}
+{% endif %}
+
+<div class="note">
+  Input drift is also monitored: every batch upload computes a Population Stability Index (PSI)
+  per feature against the training distribution, flagging material shifts before they degrade model performance.
+</div>
+{% endblock %}

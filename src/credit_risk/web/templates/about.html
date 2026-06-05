@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}About · Credit Risk Engine{% endblock %}
+{% block body %}
+<h1 class="page-title">About — how it works</h1>
+<p class="page-sub">A transparent, auditable credit decisioning pipeline — from raw applicant data to a graded decision with reason codes and a credit memo.</p>
+
+<div class="card">
+  <h2>How a decision is made</h2>
+  <p class="muted">Every applicant flows through the same seven-step pipeline, so decisions stay consistent, explainable, and reproducible.</p>
+  <table class="table">
+    <thead>
+      <tr><th>Step</th><th>Stage</th><th>What happens</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="pill">1</span></td>
+        <td>Validate</td>
+        <td>Inbound features are schema-checked and range-validated; malformed records are rejected before scoring.</td>
+      </tr>
+      <tr>
+        <td><span class="pill">2</span></td>
+        <td>Engineer features &amp; standardise</td>
+        <td>The 12 raw inputs are transformed and standardised onto the scale the model was trained on.</td>
+      </tr>
+      <tr>
+        <td><span class="pill">3</span></td>
+        <td>Model PD</td>
+        <td>The trained model produces a raw probability of default for the applicant.</td>
+      </tr>
+      <tr>
+        <td><span class="pill">4</span></td>
+        <td>Calibrate</td>
+        <td>The raw score is calibrated so the reported PD reflects real-world default frequency.</td>
+      </tr>
+      <tr>
+        <td><span class="pill">5</span></td>
+        <td>Grade + policy</td>
+        <td>The calibrated PD is mapped to a risk grade and decision via policy bands, with a human-review margin around the cut-offs.</td>
+      </tr>
+      <tr>
+        <td><span class="pill">6</span></td>
+        <td>Reason codes</td>
+        <td>Per-feature contributions are surfaced as the factors that increase and reduce risk for this applicant.</td>
+      </tr>
+      <tr>
+        <td><span class="pill">7</span></td>
+        <td>Credit memo</td>
+        <td>A plain-language memo summarises the decision and its drivers for the underwriter's file.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="note">Applicants that fall within the human-review margin around a policy cut-off are flagged for manual review rather than auto-decided.</p>
+</div>
+
+<div class="card">
+  <h2>Scoring API</h2>
+  <p class="muted">The same decision pipeline is exposed over HTTP for programmatic integration.</p>
+  <table class="table">
+    <thead>
+      <tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      {% for ep in endpoints %}
+      <tr>
+        <td><span class="pill">{{ ep.method }}</span></td>
+        <td><code>{{ ep.path }}</code></td>
+        <td>{{ ep.purpose }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3" class="muted">No endpoints documented.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Tech stack</h2>
+  <p class="muted">Built on a modern, open Python data-science and web stack.</p>
+  <p>
+    <span class="pill">Python</span>
+    <span class="pill">scikit-learn</span>
+    <span class="pill">XGBoost</span>
+    <span class="pill">SHAP</span>
+    <span class="pill">FastAPI</span>
+    <span class="pill">Jinja2</span>
+    <span class="pill">Streamlit</span>
+    <span class="pill">Plotly</span>
+  </p>
+</div>
+
+<div class="card">
+  <h2>Run &amp; deploy</h2>
+  <p class="muted">Everything is driven from the repository's Makefile and a Compose file.</p>
+  <table class="table">
+    <thead>
+      <tr><th>Command</th><th>What it runs</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>make web</code></td>
+        <td>This authenticated decisioning site <span class="pill">:8080</span></td>
+      </tr>
+      <tr>
+        <td><code>make api</code></td>
+        <td>The FastAPI scoring service <span class="pill">:8000</span></td>
+      </tr>
+      <tr>
+        <td><code>make app</code></td>
+        <td>The Streamlit exploration app</td>
+      </tr>
+      <tr>
+        <td><code>make report</code></td>
+        <td>A self-contained <code>report.html</code> — publishable to GitHub Pages</td>
+      </tr>
+      <tr>
+        <td><code>docker compose up</code></td>
+        <td>The full stack via containers</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

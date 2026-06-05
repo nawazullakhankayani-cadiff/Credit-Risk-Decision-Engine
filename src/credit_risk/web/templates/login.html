@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Sign in · Credit Risk Engine{% endblock %}
+{% block body %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand"><span class="dot"></span> Credit Risk Engine</div>
+    <h1>Sign in to your workspace</h1>
+    <p class="sub">Use your <b>Employer ID</b> or <b>company name</b> with your password to access decisioning, batch reports and model governance.</p>
+
+    {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+    {% if info %}<div class="alert info">{{ info }}</div>{% endif %}
+
+    <form method="post" action="/login">
+      <label for="identifier">Employer ID or company name</label>
+      <input id="identifier" name="identifier" autocomplete="username" placeholder="EMP001 or Acme Lending" required autofocus>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+      <div class="btn-row"><button class="btn btn-primary block" type="submit">Sign in</button></div>
+    </form>
+
+    <p class="alt">No account yet? <a href="/register">Create one</a></p>
+
+    {% if demo %}
+    <div class="demo-box">
+      <b>Demo logins</b> (password <code>demo1234</code>):<br>
+      {% for eid, co, email, name, pw in demo %}
+        <b>{{ eid }}</b> · {{ co }}{% if not loop.last %}<br>{% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

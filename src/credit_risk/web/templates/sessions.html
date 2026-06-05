@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Login history · Credit Risk Engine{% endblock %}
+{% block body %}
+<h1 class="page-title">Login history</h1>
+<p class="page-sub">Every session for <b>{{ user.employer_id }}</b> · {{ user.company_name }}.</p>
+
+<div class="card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Login (UTC)</th>
+        <th>Logout (UTC)</th>
+        <th>Status</th>
+        <th>IP</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in history %}
+      <tr>
+        <td class="muted">{{ loop.index }}</td>
+        <td>{{ s.login_utc }}</td>
+        <td>{{ s.logout_utc or "—" }}</td>
+        <td>
+          {% if s.logout_utc %}
+          <span class="pill">Ended</span>
+          {% else %}
+          <span class="tag dec-APPROVE">Active</span>
+          {% endif %}
+        </td>
+        <td>{{ s.ip or "—" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="muted">No sessions recorded yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<p class="muted">Session records capture login and logout timestamps for audit.</p>
+{% endblock %}

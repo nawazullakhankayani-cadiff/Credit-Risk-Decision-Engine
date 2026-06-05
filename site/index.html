@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Credit Risk Decision Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root, html[data-theme="dark"]{
+    --bg:#0f1216; --panel:#171b21; --panel2:#1e242c; --line:#2a313b;
+    --text:#e8eaed; --muted:#9aa4b2; --accent:#4f8cff;
+    --green:#1faa6e; --green-bg:#10271f; --amber:#d99417; --amber-bg:#2a2110;
+    --red:#e2514f; --red-bg:#2c1414; --radius:14px;
+  }
+  html[data-theme="light"]{
+    --bg:#f6f7f9; --panel:#ffffff; --panel2:#f0f2f5; --line:#e2e6ec;
+    --text:#1a1f27; --muted:#5b6675; --accent:#2f6bff;
+    --green:#138a57; --green-bg:#e7f5ee; --amber:#a9720c; --amber-bg:#fbf1dd;
+    --red:#c4403e; --red-bg:#fbeae9;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;}
+  a{color:var(--accent)}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 20px}
+  header{border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--bg); z-index:10}
+  .nav{display:flex; align-items:center; justify-content:space-between; height:58px; gap:12px}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:600; letter-spacing:.2px; white-space:nowrap}
+  .dot{width:12px; height:12px; border-radius:50%; background:var(--accent)}
+  .nav-links a{color:var(--muted); text-decoration:none; margin-left:18px; font-size:14px}
+  .nav-links a:hover{color:var(--text)}
+  .icon-btn{border:1px solid var(--line); background:var(--panel); color:var(--text); cursor:pointer;
+    border-radius:9px; width:36px; height:36px; font-size:16px; margin-left:14px}
+  .keybar{border-bottom:1px solid var(--line); background:var(--panel)}
+  .keybar .inner{display:flex; align-items:center; gap:10px; padding:10px 0; flex-wrap:wrap}
+  .keybar input{flex:1; min-width:220px; background:var(--bg); color:var(--text); border:1px solid var(--line);
+    border-radius:9px; padding:9px 12px; font-size:13px; font-family:ui-monospace,Menlo,monospace}
+  .keybar select{background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:9px; padding:9px 10px; font-size:13px}
+  .keystatus{font-size:12px; padding:5px 10px; border-radius:999px; white-space:nowrap; background:var(--panel2); color:var(--muted); border:1px solid var(--line)}
+  .keystatus.ok{background:var(--green-bg); color:var(--green); border-color:transparent}
+  .keyhint{font-size:11px; color:var(--muted); padding-bottom:8px}
+  .hero{padding:56px 0 36px; text-align:center}
+  .tag{display:inline-block; font-size:12px; color:var(--accent); border:1px solid var(--line); background:var(--panel); padding:5px 12px; border-radius:999px; margin-bottom:18px}
+  h1{font-size:42px; line-height:1.15; margin:0 0 16px; font-weight:650; letter-spacing:-.5px}
+  h1 span{color:var(--accent)}
+  .sub{font-size:18px; color:var(--muted); max-width:680px; margin:0 auto 28px}
+  .cta{display:inline-flex; gap:12px; flex-wrap:wrap; justify-content:center}
+  .btn{border:1px solid var(--line); background:var(--panel); color:var(--text); padding:11px 18px; border-radius:10px; font-size:14px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px}
+  .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600}
+  .btn:hover{border-color:var(--accent)}
+  .btn:disabled{opacity:.5; cursor:default}
+  .btn.sm{padding:7px 12px; font-size:13px}
+  .metrics{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:36px 0 8px}
+  .metric{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px}
+  .metric .v{font-size:30px; font-weight:650}
+  .metric .l{font-size:13px; color:var(--muted)}
+  section{padding:44px 0}
+  .sectitle{font-size:13px; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent); margin-bottom:8px}
+  h2{font-size:28px; margin:0 0 8px; font-weight:600; letter-spacing:-.3px}
+  .lead{color:var(--muted); max-width:720px; margin:0 0 26px}
+  .demo{display:grid; grid-template-columns:1.05fr 1fr; gap:22px; align-items:start}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:22px}
+  .card h3{margin:0 0 4px; font-size:18px; font-weight:600}
+  .presets{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 18px}
+  .chip{font-size:13px; border:1px solid var(--line); background:var(--panel2); color:var(--text); border-radius:999px; padding:7px 13px; cursor:pointer}
+  .chip:hover{border-color:var(--accent); color:var(--accent)}
+  .field{margin-bottom:14px}
+  .field label{display:flex; justify-content:space-between; font-size:13px; color:var(--muted); margin-bottom:6px}
+  .field label b{color:var(--text); font-weight:600}
+  input[type=range]{width:100%; accent-color:var(--accent)}
+  select.full{width:100%; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:9px; padding:9px 10px; font-size:14px}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .verdict{display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-radius:12px; margin-bottom:18px; border:1px solid var(--line)}
+  .verdict .dec{font-size:22px; font-weight:700}
+  .verdict .grade{font-size:13px; color:var(--muted)}
+  .badge{font-size:12px; padding:5px 12px; border-radius:999px; font-weight:600}
+  .pdrow{display:flex; align-items:baseline; gap:10px; margin-bottom:6px}
+  .pdrow .pd{font-size:34px; font-weight:700}
+  .pdrow .cap{color:var(--muted); font-size:13px}
+  .bar{height:10px; background:var(--panel2); border-radius:8px; overflow:hidden; margin:6px 0 18px}
+  .bar>div{height:100%; border-radius:8px; transition:width .4s ease}
+  .review{font-size:13px; background:var(--amber-bg); color:var(--amber); border:1px solid var(--line); padding:8px 12px; border-radius:9px; margin-bottom:16px; display:none}
+  .contrib{margin-bottom:18px}
+  .contrib h4{margin:0 0 10px; font-size:13px; color:var(--muted); font-weight:600}
+  .crow{display:grid; grid-template-columns:130px 1fr; gap:8px; align-items:center; font-size:12px; margin-bottom:6px}
+  .crow .lbl{color:var(--text); text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .ctrack{position:relative; height:16px; background:var(--panel2); border-radius:5px}
+  .ctrack .mid{position:absolute; left:50%; top:0; bottom:0; width:1px; background:var(--line)}
+  .cfill{position:absolute; top:2px; bottom:2px; border-radius:3px}
+  .memo{background:var(--panel2); border-left:3px solid var(--accent); border-radius:0 9px 9px 0; padding:14px 16px; font-size:14px; color:var(--text)}
+  .memo .src{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px}
+  .memo-actions{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap}
+  .spin{display:inline-block; width:13px; height:13px; border:2px solid var(--muted); border-top-color:transparent; border-radius:50%; animation:sp .7s linear infinite; vertical-align:-2px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .features{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+  .feat{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px}
+  .feat .ic{font-size:20px}
+  .feat h4{margin:10px 0 6px; font-size:16px}
+  .feat p{margin:0; color:var(--muted); font-size:14px}
+  .drop{border:1.5px dashed var(--line); border-radius:12px; padding:26px; text-align:center; color:var(--muted); cursor:pointer; background:var(--panel)}
+  .drop:hover{border-color:var(--accent); color:var(--text)}
+  .report{background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:16px 0; font-size:13px; display:none}
+  .report b{color:var(--text)}
+  .pill{display:inline-block; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:2px 9px; margin:2px 4px 2px 0; color:var(--muted)}
+  .pill.map{color:var(--green)}
+  .bmetrics{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:18px 0}
+  .bmetric{background:var(--panel2); border-radius:10px; padding:14px}
+  .bmetric .v{font-size:22px; font-weight:650}
+  .bmetric .l{font-size:12px; color:var(--muted)}
+  .charts{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px}
+  .chartbox{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px}
+  .chartbox h4{margin:0 0 8px; font-size:13px; color:var(--muted); font-weight:600}
+  .chartbox .cv{position:relative; height:210px}
+  table{width:100%; border-collapse:collapse; font-size:13px; margin-top:8px}
+  th,td{text-align:left; padding:7px 8px; border-bottom:1px solid var(--line)}
+  th{color:var(--muted); font-weight:600}
+  pre{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; overflow:auto; font-size:13px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  footer{border-top:1px solid var(--line); color:var(--muted); font-size:13px; padding:28px 0; text-align:center}
+  .note{font-size:12px; color:var(--muted); margin-top:14px}
+  .hidden{display:none}
+  @media(max-width:880px){ .demo{grid-template-columns:1fr} .metrics,.bmetrics,.charts{grid-template-columns:repeat(2,1fr)} .features{grid-template-columns:1fr} h1{font-size:32px} .nav-links{display:none} }
+  @media(max-width:560px){ .charts{grid-template-columns:1fr} }
+
+  /* ============================================================= */
+  /* ===============  PREMIUM UI/UX DESIGN SYSTEM  =============== */
+  /* ============================================================= */
+  :root, html[data-theme="dark"]{
+    --bg:#0a0d14; --panel:#10151f; --panel2:#171f2c; --line:#212b3b;
+    --text:#e9eef6; --muted:#8d9ab0; --accent:#5b8cff; --accent2:#8a6bff;
+    --green:#1faa6e; --green-bg:#0f2a20; --amber:#e0a02a; --amber-bg:#2a2110;
+    --red:#ef5a57; --red-bg:#2c1517; --radius:16px;
+    --ring:0 0 0 3px rgba(91,140,255,.25);
+    --shadow:0 18px 50px -22px rgba(0,0,0,.75);
+    --card-grad:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0));
+  }
+  html[data-theme="light"]{
+    --bg:#f4f7fc; --panel:#ffffff; --panel2:#eef2f8; --line:#e3e8f1;
+    --text:#0f1828; --muted:#5a6678; --accent:#3a6ff0; --accent2:#7a5cff;
+    --green:#138a57; --green-bg:#e7f5ee; --amber:#a9720c; --amber-bg:#fbf1dd;
+    --red:#d23b3b; --red-bg:#fbeae9;
+    --shadow:0 16px 40px -20px rgba(20,30,60,.25);
+    --card-grad:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0));
+    --ring:0 0 0 3px rgba(58,111,240,.18);
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; letter-spacing:.1px; position:relative}
+  h1,h2,h3,.brand,.metric .v,.bmetric .v,.pdrow .pd,.verdict .dec{font-family:"Space Grotesk","Inter",sans-serif}
+  /* ambient background: soft glows + masked grid */
+  body::before{content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
+    background:radial-gradient(900px 520px at 82% -8%, rgba(138,107,255,.20), transparent 60%),
+               radial-gradient(820px 520px at 8% -12%, rgba(91,140,255,.20), transparent 58%)}
+  body::after{content:""; position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.45;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:46px 46px;
+    -webkit-mask-image:radial-gradient(circle at 50% -2%, #000, transparent 62%);
+    mask-image:radial-gradient(circle at 50% -2%, #000, transparent 62%)}
+  html[data-theme="light"] body::after{opacity:.5}
+  ::selection{background:rgba(91,140,255,.32)}
+  .wrap{max-width:1140px}
+
+  /* header — glass */
+  header{background:transparent; border-bottom:0}
+  header::before{content:""; position:absolute; inset:0; z-index:-1;
+    background:color-mix(in srgb, var(--bg) 70%, transparent);
+    backdrop-filter:blur(16px) saturate(150%); -webkit-backdrop-filter:blur(16px) saturate(150%);
+    border-bottom:1px solid var(--line)}
+  .nav{height:64px}
+  .brand{font-weight:700; letter-spacing:-.2px; font-size:15px}
+  .dot{width:11px; height:11px; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 0 0 4px rgba(91,140,255,.16)}
+  .nav-links a{position:relative; font-weight:500}
+  .nav-links a::after{content:""; position:absolute; left:0; right:100%; bottom:-7px; height:2px; border-radius:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:right .28s cubic-bezier(.2,.7,.2,1)}
+  .nav-links a:hover::after, .nav-links a.active::after{right:0}
+  .nav-links a.active{color:var(--text)}
+  .icon-btn{border-radius:11px; transition:.2s}
+  .icon-btn:hover{border-color:var(--accent); color:var(--accent); transform:translateY(-1px)}
+  .keybar{background:color-mix(in srgb,var(--panel) 72%, transparent); border-bottom:1px solid var(--line)}
+  .keybar input,.keybar select{border-radius:10px; transition:.18s}
+  .keybar input:focus,.keybar select:focus{outline:none; border-color:var(--accent); box-shadow:var(--ring)}
+  .keystatus{font-weight:600}
+  .keystatus.ok{box-shadow:inset 0 0 0 1px rgba(31,170,110,.35)}
+
+  /* hero */
+  .hero{padding:88px 0 52px}
+  .tag{background:color-mix(in srgb,var(--panel) 82%, transparent); backdrop-filter:blur(6px); font-weight:600; box-shadow:var(--shadow)}
+  h1{font-size:clamp(34px,5.4vw,58px); font-weight:700; letter-spacing:-1.6px; line-height:1.04; margin-bottom:18px}
+  h1 span{background:linear-gradient(120deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent}
+  .sub{font-size:19px; max-width:730px}
+
+  /* buttons */
+  .btn{border-radius:12px; font-weight:600; transition:transform .15s ease, box-shadow .22s ease, border-color .2s, background .2s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+  .btn:not(.primary){background:color-mix(in srgb,var(--panel) 86%, transparent); backdrop-filter:blur(6px)}
+  .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2)); border-color:transparent; box-shadow:0 12px 28px -10px rgba(91,140,255,.65)}
+  .btn.primary:hover{box-shadow:0 18px 36px -10px rgba(91,140,255,.75)}
+  .btn:focus-visible{outline:none; box-shadow:var(--ring)}
+
+  /* metric tiles */
+  .metrics{gap:16px; margin-top:50px}
+  .metric{position:relative; background:var(--panel); background-image:var(--card-grad); border-radius:var(--radius); padding:22px 22px 20px; overflow:hidden; transition:transform .2s, border-color .2s}
+  .metric::before{content:""; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); opacity:.75}
+  .metric:hover{transform:translateY(-3px); border-color:color-mix(in srgb,var(--accent) 40%, var(--line))}
+  .metric .v{font-size:34px; font-weight:700; letter-spacing:-1px}
+  .metric .l{text-transform:uppercase; letter-spacing:1px; font-size:11px; font-weight:600}
+
+  /* sections */
+  section{padding:62px 0}
+  .sectitle{font-weight:700}
+  h2{font-size:clamp(26px,3.4vw,36px); font-weight:700; letter-spacing:-.8px}
+  .lead{font-size:16.5px}
+
+  /* cards */
+  .card{background:var(--panel); background-image:var(--card-grad); border-radius:18px; box-shadow:var(--shadow)}
+  .card h3{font-size:12px; text-transform:uppercase; letter-spacing:1.4px; color:var(--muted); font-weight:700}
+
+  /* chips */
+  .chip{font-weight:600; transition:.18s}
+  .chip:hover{transform:translateY(-1px); background:color-mix(in srgb,var(--accent) 14%, var(--panel2)); border-color:var(--accent)}
+
+  /* inputs */
+  .full{width:100%; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:14px; transition:.18s}
+  .full:focus{outline:none; border-color:var(--accent); box-shadow:var(--ring)}
+  select.full{appearance:none; -webkit-appearance:none; padding-right:34px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238d9ab0' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center}
+  .field label{font-weight:500}
+  .field label b{font-weight:700}
+  /* custom range slider */
+  input[type=range]{-webkit-appearance:none; appearance:none; height:6px; border-radius:999px; background:var(--panel2); accent-color:var(--accent)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:2px solid var(--bg); box-shadow:0 2px 9px rgba(91,140,255,.5); cursor:pointer; transition:transform .12s}
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.14)}
+  input[type=range]::-moz-range-thumb{width:16px; height:16px; border:2px solid var(--bg); border-radius:50%; background:var(--accent); cursor:pointer}
+  input[type=range]:focus-visible{box-shadow:var(--ring)}
+
+  /* decision panel */
+  .verdict{border-radius:14px; backdrop-filter:blur(4px)}
+  .verdict .dec{font-size:24px; letter-spacing:-.5px}
+  .badge{box-shadow:0 4px 14px -4px rgba(0,0,0,.5)}
+  .pdrow .pd{font-size:42px; letter-spacing:-1.5px}
+  .bar{height:12px; background:var(--panel2)}
+  .bar>div{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .ctrack{height:18px; border-radius:6px}
+  .cfill{border-radius:5px; box-shadow:0 0 12px -2px currentColor}
+  .memo{border-radius:12px; border-left-width:4px; background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,var(--panel2)),var(--panel2))}
+
+  /* feature cards */
+  .features{gap:18px}
+  .feat{position:relative; background:var(--panel); background-image:var(--card-grad); border-radius:18px; padding:24px; overflow:hidden; transition:transform .2s, border-color .2s, box-shadow .2s}
+  .feat:hover{transform:translateY(-4px); border-color:color-mix(in srgb,var(--accent) 35%,var(--line)); box-shadow:var(--shadow)}
+  .feat .ic{display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:14px; font-size:22px; border:1px solid var(--line);
+    background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 22%,transparent),color-mix(in srgb,var(--accent2) 22%,transparent))}
+  .feat h4{font-size:16.5px; font-weight:700; letter-spacing:-.2px; margin-top:14px}
+
+  /* dropzone */
+  .drop{border-radius:16px; padding:40px; font-weight:500; transition:.2s; background:linear-gradient(180deg,var(--panel),color-mix(in srgb,var(--panel2) 45%,var(--panel)))}
+  .drop:hover{border-color:var(--accent); color:var(--text); background:color-mix(in srgb,var(--accent) 6%,var(--panel)); transform:translateY(-2px)}
+
+  /* batch */
+  .bmetric{background:var(--panel2); border:1px solid var(--line); border-radius:14px}
+  .bmetric .v{font-size:26px; letter-spacing:-.5px}
+  .chartbox{border-radius:16px; background:var(--panel); background-image:var(--card-grad)}
+  .report{border-radius:14px}
+  table{border:1px solid var(--line); border-radius:12px; overflow:hidden; border-collapse:separate; border-spacing:0}
+  th{background:var(--panel2); text-transform:uppercase; font-size:11px; letter-spacing:.5px}
+  tbody tr:hover td{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+
+  /* run terminal */
+  pre{position:relative; border-radius:16px; background:#0b1019; color:#dfe7f2; border:1px solid #1d2738; padding:46px 18px 18px; box-shadow:var(--shadow)}
+  pre code{color:#dfe7f2}
+  .term-bar{position:absolute; top:0; left:0; right:0; height:36px; display:flex; align-items:center; gap:7px; padding:0 14px; border-bottom:1px solid #1d2738}
+  .term-dot{width:11px; height:11px; border-radius:50%}
+  .copy-run{position:absolute; top:6px; right:9px; z-index:2}
+
+  /* reveal-on-scroll (added by JS so no-JS still shows content) */
+  .reveal{opacity:0; transform:translateY(16px)}
+  .reveal.in{opacity:1; transform:none; transition:opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1)}
+
+  footer{padding:42px 0}
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto !important} .reveal{opacity:1; transform:none} .btn:hover,.metric:hover,.feat:hover{transform:none} }
+
+  /* ============ APP SHELL · LOGIN · LEFT SIDEBAR ============ */
+  :root{--sb:256px}
+  body > header, body > .wrap, body > footer{display:none !important}  /* raw layout; JS assembles the app */
+  /* login */
+  .auth{position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 16px;
+    background:radial-gradient(1000px 560px at 50% -12%, rgba(138,107,255,.20), transparent 60%),
+               radial-gradient(900px 520px at 50% 114%, rgba(91,140,255,.14), transparent 60%)}
+  .auth.hidden{display:none}
+  .auth-theme{position:absolute; top:18px; right:18px}
+  .auth-card{width:100%; max-width:430px; background:var(--panel); background-image:var(--card-grad);
+    border:1px solid var(--line); border-radius:22px; padding:34px 30px; box-shadow:0 40px 90px -30px rgba(0,0,0,.85)}
+  .auth-brand{display:flex; align-items:center; gap:9px; font-weight:700; font-size:18px; letter-spacing:-.2px; font-family:"Space Grotesk",sans-serif}
+  .auth-brand .dot{width:11px; height:11px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 0 0 4px rgba(91,140,255,.18)}
+  .auth-card h1{font-size:23px; margin:16px 0 4px; letter-spacing:-.6px}
+  .auth-sub{color:var(--muted); font-size:14px; margin:0 0 16px}
+  .auth-card label{display:block; font-size:12.5px; color:var(--muted); font-weight:600; margin:14px 0 6px}
+  .auth-err{color:#f6a9b1; font-size:13px; min-height:18px; margin:8px 0 0}
+  .auth-demo{margin-top:18px; background:var(--panel2); border:1px dashed color-mix(in srgb,var(--accent) 35%,var(--line)); border-radius:13px; padding:12px 14px; font-size:12.5px; color:#aebbd0}
+  .auth-demo b{color:#cdd9f0}
+  /* app grid */
+  .app{display:grid; grid-template-columns:var(--sb) 1fr; min-height:100vh}
+  .app.hidden{display:none}
+  .sidebar{position:sticky; top:0; align-self:start; height:100vh; display:flex; flex-direction:column; padding:18px 14px;
+    background:linear-gradient(180deg,#0c1119,#0a0e16); border-right:1px solid var(--line)}
+  .s-brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:16px; letter-spacing:-.2px; padding:6px 8px 4px; color:var(--text); text-decoration:none; cursor:pointer; font-family:"Space Grotesk",sans-serif}
+  .s-brand .dot{width:11px; height:11px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 0 0 4px rgba(91,140,255,.16)}
+  .s-nav{display:flex; flex-direction:column; gap:3px; margin-top:24px}
+  .s-nav .nav-link{display:flex; align-items:center; gap:11px; color:var(--muted); padding:10px 12px; border-radius:11px; font-size:14px; font-weight:500; cursor:pointer; text-decoration:none; transition:.16s}
+  .s-nav .nav-link:hover{background:rgba(255,255,255,.05); color:var(--text); transform:translateX(2px); text-decoration:none}
+  .s-nav .nav-link.active{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 10px 24px -8px rgba(91,140,255,.55)}
+  .s-nav .nav-ico{width:20px; text-align:center; font-size:14px; flex:none}
+  .s-foot{margin-top:auto; display:flex; flex-direction:column; gap:10px; padding-top:14px}
+  .s-user{display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.10); border-radius:13px; padding:9px 10px}
+  .s-avatar{width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex:none}
+  .s-meta{display:flex; flex-direction:column; min-width:0; line-height:1.25}
+  .s-name{font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .s-co{font-size:11.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .s-foot-row{display:flex; gap:8px; align-items:center}
+  .btn-logout{flex:1; text-align:center; color:var(--text); border:1px solid var(--line); padding:9px 13px; border-radius:11px; font-size:13px; font-weight:600; background:var(--panel2); cursor:pointer; transition:.16s}
+  .btn-logout:hover{background:var(--panel); border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+  /* main + views */
+  .main{min-width:0; display:flex; flex-direction:column}
+  .topbar{position:sticky; top:0; z-index:8; padding:8px 26px; border-bottom:1px solid var(--line); background:color-mix(in srgb,var(--bg) 82%,transparent); backdrop-filter:blur(12px)}
+  .topbar .keybar{background:transparent; border:none}
+  .topbar .keybar .wrap{display:block !important; max-width:none; padding:0}
+  .topbar .keyhint{padding-bottom:0}
+  .views{padding:26px; max-width:1180px; width:100%}
+  .views > .view{display:none; animation:viewin .35s ease}
+  .views > .view.active{display:block}
+  @keyframes viewin{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+  .views section{padding:0}
+  .view .hero{padding:8px 0 24px; text-align:left}
+  .view .hero .sub{margin:0 0 26px}
+  .view .hero .cta{justify-content:flex-start}
+  .quick{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:10px}
+  .qcard{text-decoration:none}
+  .callout{background:color-mix(in srgb,var(--amber) 12%,var(--panel)); border:1px solid color-mix(in srgb,var(--amber) 32%,var(--line)); color:#f3cf8e; border-left:4px solid var(--amber); border-radius:12px; padding:13px 16px; font-size:13.5px}
+  @media(max-width:900px){
+    .app{grid-template-columns:1fr}
+    .sidebar{position:static; height:auto; flex-direction:row; flex-wrap:wrap; align-items:center; gap:6px; border-right:none; border-bottom:1px solid var(--line)}
+    .s-brand{margin-right:auto; padding:0}
+    .s-nav{flex-direction:row; flex-wrap:wrap; margin-top:0; width:100%; order:3}
+    .s-nav .nav-ico{display:none}
+    .s-foot{margin-top:0; flex-direction:row; padding-top:0}
+    .views,.topbar{padding-left:16px; padding-right:16px}
+    .quick{grid-template-columns:1fr}
+  }
+  /* topbar title + relocated API key bar */
+  .tb-title{font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:15px; letter-spacing:-.2px; color:var(--text); padding:5px 2px}
+  #view-apikey .keybar{background:transparent; border:none}
+  #view-apikey .keybar .wrap{max-width:none; padding:0}
+  #view-apikey .keybar .inner{padding-top:0}
+  #view-apikey #api-key{min-width:280px}
+  /* overview explainer + comparison */
+  .ov-grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+  .ov-grid2{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+  .steps{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-top:6px}
+  .step{display:flex; align-items:flex-start; gap:10px; background:var(--panel); background-image:var(--card-grad); border:1px solid var(--line); border-radius:14px; padding:13px 14px}
+  .step .n{flex:none; width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2))}
+  .step b{display:block; font-size:13.5px}
+  .step .muted{display:block; font-size:12px}
+  .compare .cmp-h{display:flex; align-items:center; gap:8px; font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:15px; margin-bottom:10px}
+  .compare ul{margin:0; padding-left:18px; color:var(--muted); font-size:13.5px; line-height:1.75}
+  .compare.on{border-color:color-mix(in srgb,var(--accent) 45%,var(--line)); box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 22%,transparent), var(--shadow)}
+  @media(max-width:760px){ .ov-grid3,.ov-grid2{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <div class="brand"><span class="dot"></span> Credit Risk Decision Engine</div>
+    <div style="display:flex; align-items:center;">
+      <span class="nav-links"><a href="#demo">Live demo</a><a href="#batch">Batch + PDF</a><a href="#how">How it works</a><a href="#run">Run it</a></span>
+      <button class="icon-btn" id="theme-btn" title="Toggle theme" aria-label="Toggle theme">◐</button>
+    </div>
+  </div>
+  <div class="keybar"><div class="wrap">
+    <div class="inner">
+      <span style="font-size:13px; color:var(--muted); white-space:nowrap;">LLM API key</span>
+      <input id="api-key" type="password" placeholder="Paste OpenAI (sk-…) or Anthropic (sk-ant-…) key to enable real AI memos" autocomplete="off" />
+      <select id="api-model"></select>
+      <span class="keystatus" id="key-status">Template mode</span>
+    </div>
+    <div class="keyhint">Your key stays in this browser, is sent only to the provider you chose, and is never stored unless you tick remember. Use a usage-limited key. <label style="margin-left:6px;"><input type="checkbox" id="remember-key" style="vertical-align:-1px;"/> remember on this device</label></div>
+  </div></div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <span class="tag">Explainable · Calibrated · Governed</span>
+    <h1>Score a loan in <span>milliseconds</span>,<br/>and justify every decision.</h1>
+    <p class="sub">Estimate probability of default, assign a risk grade, return a decision with reason codes and an AI credit memo, and route borderline cases to a human. Upload any messy CSV — it auto-cleans, scores, charts, and exports a PDF. All in your browser.</p>
+    <div class="cta">
+      <a class="btn primary" href="#demo">Try the live scorer</a>
+      <a class="btn" href="#batch">Upload a CSV → PDF</a>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="v" id="m-auc">0.795</div><div class="l">AUC</div></div>
+      <div class="metric"><div class="v">0.590</div><div class="l">Gini</div></div>
+      <div class="metric"><div class="v">0.445</div><div class="l">KS statistic</div></div>
+      <div class="metric"><div class="v">~6<span style="font-size:15px;color:var(--muted)"> ms</span></div><div class="l">Latency / score</div></div>
+    </div>
+    <p class="note">Held-out test metrics from the bundled model · version <span id="ver"></span></p>
+  </div>
+
+  <section id="demo">
+    <div class="sectitle">Live demo · manual entry</div>
+    <h2>Score an applicant</h2>
+    <p class="lead">Enter an applicant by hand or pick a preset. The model, feature pipeline and calibrator exported from the Python service run right here. Add an API key above to write the memo with a real LLM, then export the decision as a PDF.</p>
+    <div class="demo">
+      <div class="card">
+        <h3>Applicant</h3>
+        <div class="grid2" style="margin-bottom:6px;">
+          <div class="field"><label>Applicant name</label><input class="full" id="app_name" placeholder="e.g. Jordan Smith"></div>
+          <div class="field"><label>Applicant email (optional)</label><input class="full" id="app_email" placeholder="name@email.com"></div>
+        </div>
+        <div class="presets">
+          <span class="chip" data-preset="prime">Prime borrower</span>
+          <span class="chip" data-preset="middle">Solid middle</span>
+          <span class="chip" data-preset="stretch">Stretched</span>
+          <span class="chip" data-preset="high">High risk</span>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Loan amount <b id="o-loan_amount"></b></label><input type="range" id="loan_amount" min="500" max="60000" step="500"></div>
+          <div class="field"><label>Annual income <b id="o-annual_income"></b></label><input type="range" id="annual_income" min="8000" max="200000" step="1000"></div>
+          <div class="field"><label>Employment (yrs) <b id="o-employment_length"></b></label><input type="range" id="employment_length" min="0" max="40" step="1"></div>
+          <div class="field"><label>Debt-to-income <b id="o-debt_to_income"></b></label><input type="range" id="debt_to_income" min="0" max="1.5" step="0.01"></div>
+          <div class="field"><label>Credit utilisation <b id="o-credit_utilization"></b></label><input type="range" id="credit_utilization" min="0" max="1.5" step="0.01"></div>
+          <div class="field"><label>Delinquencies (2y) <b id="o-num_delinquencies_2y"></b></label><input type="range" id="num_delinquencies_2y" min="0" max="8" step="1"></div>
+          <div class="field"><label>Open accounts <b id="o-num_open_accounts"></b></label><input type="range" id="num_open_accounts" min="0" max="30" step="1"></div>
+          <div class="field"><label>Credit history (yrs) <b id="o-credit_history_length"></b></label><input type="range" id="credit_history_length" min="0" max="40" step="1"></div>
+          <div class="field"><label>Recent inquiries <b id="o-num_recent_inquiries"></b></label><input type="range" id="num_recent_inquiries" min="0" max="10" step="1"></div>
+          <div class="field"><label>Interest rate (APR) <b id="o-interest_rate"></b></label><input type="range" id="interest_rate" min="3" max="35" step="0.1"></div>
+          <div class="field"><label>Loan term</label><select class="full" id="loan_term_months"><option value="36">36 months</option><option value="60">60 months</option></select></div>
+          <div class="field"><label>Home ownership</label><select class="full" id="home_ownership_code"><option value="0">Rent</option><option value="1">Mortgage</option><option value="2">Own</option></select></div>
+        </div>
+      </div>
+
+      <div class="card" id="result">
+        <h3>Decision</h3>
+        <div class="verdict" id="verdict">
+          <div><div class="dec" id="r-dec">—</div><div class="grade" id="r-grade"></div></div>
+          <span class="badge" id="r-badge"></span>
+        </div>
+        <div class="pdrow"><span class="pd" id="r-pd">—</span><span class="cap">probability of default · <span id="r-conf"></span> confidence</span></div>
+        <div class="bar"><div id="r-bar"></div></div>
+        <div class="review" id="r-review"><b>Human review.</b> This case sits within the decision margin of a band boundary, so it is referred rather than auto-decided.</div>
+        <div class="contrib"><h4>Factor contributions to default risk</h4><div id="r-contrib"></div></div>
+        <div class="memo">
+          <div class="src" id="memo-src">AI credit memo · template</div>
+          <div id="r-memo"></div>
+          <div class="memo-actions">
+            <button class="btn sm" id="gen-memo">Generate AI memo</button>
+            <button class="btn sm" id="copy-memo">Copy</button>
+            <button class="btn sm" id="export-pdf">Export PDF</button>
+            <button class="btn sm primary" id="letter-btn">Applicant letter</button>
+            <button class="btn sm" id="export-memo">Export JSON</button>
+          </div>
+          <div id="letter-wrap" style="display:none; margin-top:14px;">
+            <div class="src" id="letter-src" style="font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Applicant decision letter</div>
+            <div id="letter-text" style="white-space:pre-wrap; font-size:13px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px;"></div>
+            <div class="memo-actions"><button class="btn sm" id="letter-pdf">Download letter PDF</button><button class="btn sm" id="letter-email">Email to applicant</button><button class="btn sm" id="letter-copy">Copy</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Bundled model is the dependency-free logistic baseline; the full repo trains XGBoost + SHAP. Data is synthetic — see the model card.</p>
+  </section>
+
+  <section id="batch">
+    <div class="sectitle">Batch · auto-clean · charts · PDF</div>
+    <h2>Upload any CSV — it cleans itself, scores, and reports</h2>
+    <p class="lead">Drop in a file with messy headers, currency symbols, percentages, text categories or missing values. The cleaner maps columns, fixes formats, fills gaps with training medians and clips outliers — then scores every row automatically and builds dashboards and a PDF.</p>
+    <div style="display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+      <a class="btn sm" href="samples/sample_portfolio.csv" download>Download clean sample</a>
+      <a class="btn sm" href="samples/messy_applicants.csv" download>Download messy sample</a>
+      <button class="btn sm" id="demo-batch">Score 300 random applicants</button>
+    </div>
+    <label class="drop" id="drop">
+      <input type="file" id="csv-file" accept=".csv" class="hidden" />
+      Click to upload a CSV (clean or messy), or use the buttons above.
+    </label>
+
+    <div class="report" id="clean-report"></div>
+
+    <div id="batch-out" class="hidden">
+      <div class="bmetrics">
+        <div class="bmetric"><div class="v" id="b-total">0</div><div class="l">Applicants</div></div>
+        <div class="bmetric"><div class="v" id="b-approve">0%</div><div class="l">Approve rate</div></div>
+        <div class="bmetric"><div class="v" id="b-decline">0%</div><div class="l">Decline rate</div></div>
+        <div class="bmetric"><div class="v" id="b-avgpd">0%</div><div class="l">Average PD</div></div>
+      </div>
+      <div class="charts">
+        <div class="chartbox"><h4>Risk grade distribution</h4><div class="cv"><canvas id="ch-grade" role="img" aria-label="Risk grade distribution"></canvas></div></div>
+        <div class="chartbox"><h4>Decision mix</h4><div class="cv"><canvas id="ch-dec" role="img" aria-label="Decision mix"></canvas></div></div>
+        <div class="chartbox"><h4>PD distribution</h4><div class="cv"><canvas id="ch-pd" role="img" aria-label="Probability of default distribution"></canvas></div></div>
+        <div class="chartbox"><h4>PD vs debt-to-income</h4><div class="cv"><canvas id="ch-scatter" role="img" aria-label="PD versus debt to income scatter"></canvas></div></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:18px; gap:10px; flex-wrap:wrap;">
+        <span style="font-size:13px; color:var(--muted);">Preview (first 10 rows)</span>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn sm" id="download-scored">Download scored CSV</button>
+          <button class="btn sm primary" id="portfolio-pdf">Portfolio PDF report</button>
+        </div>
+      </div>
+      <div style="overflow:auto;"><table id="batch-table"></table></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="sectitle">How it works</div>
+    <h2>Built like a regulated model, not a notebook</h2>
+    <p class="lead">Every applicant flows through the same governed pipeline, and every decision is explainable and logged.</p>
+    <div class="features">
+      <div class="feat"><div class="ic">📊</div><h4>Calibrated PD</h4><p>Isotonic calibration means a "5% PD" really means ~5 in 100 — essential for pricing and expected-loss.</p></div>
+      <div class="feat"><div class="ic">🔍</div><h4>Reason codes</h4><p>SHAP / linear contributions surface the factors behind each decision, supporting adverse-action explanations.</p></div>
+      <div class="feat"><div class="ic">🧹</div><h4>Auto-clean intake</h4><p>Any CSV — odd headers, £/%/text, gaps — is mapped, coerced, imputed and clipped before scoring.</p></div>
+      <div class="feat"><div class="ic">🧑‍⚖️</div><h4>Human-in-the-loop</h4><p>A decision margin routes borderline and declined cases to a human. The LLM narrates — it never decides.</p></div>
+      <div class="feat"><div class="ic">📈</div><h4>Dashboards + PDF</h4><p>Grade, decision, PD and risk-vs-DTI charts, plus a one-click PDF report for credit committee.</p></div>
+      <div class="feat"><div class="ic">✅</div><h4>Tested & CI'd</h4><p>21 unit tests, GitHub Actions, Docker + compose. Graceful fallbacks so it runs anywhere.</p></div>
+    </div>
+  </section>
+
+  <section id="run">
+    <div class="sectitle">Run it</div>
+    <h2>The full FastAPI + Streamlit app</h2>
+    <p class="lead">This page is a static export. To run the real service with the API, Swagger docs and monitoring dashboard:</p>
+    <pre><code>cd credit-risk-engine
+pip install -r requirements.txt
+make train      # generate data, train + register a model
+make app        # Streamlit UI  -> http://localhost:8501
+make api        # FastAPI docs  -> http://localhost:8000/docs
+# or: docker compose up --build</code></pre>
+  </section>
+</div>
+
+<footer><div class="wrap">Credit Risk Decision Engine · explainable, governed PD scoring · model version <span id="ver2"></span></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const MODEL = {"version": "20260604T234806Z-441558d5a41a", "model_name": "logreg_baseline", "features": ["loan_amount", "annual_income", "employment_length", "debt_to_income", "credit_utilization", "num_delinquencies_2y", "num_open_accounts", "credit_history_length", "num_recent_inquiries", "loan_term_months", "interest_rate", "home_ownership_code"], "all_features": ["loan_amount", "annual_income", "employment_length", "debt_to_income", "credit_utilization", "num_delinquencies_2y", "num_open_accounts", "credit_history_length", "num_recent_inquiries", "loan_term_months", "interest_rate", "home_ownership_code", "loan_to_income", "monthly_payment_est", "payment_to_income", "stress_flag", "thin_file_flag"], "engineered": ["loan_to_income", "monthly_payment_est", "payment_to_income", "stress_flag", "thin_file_flag"], "w": [0.10565919625839078, -0.20195467380920515, -0.16299633692390494, 0.48284068921405054, 0.3625950406802139, 0.29046750209715183, 0.005144795664337522, -0.12559265031781713, 0.1535117888265401, 0.38647236079246994, 0.275569952533698, -0.08097298996310429, 0.39376416333911973, -0.13364326416662672, 0.048221022617443446, 0.0610171521206692, 0.00741187024715911], "b": -0.3165075896506228, "means": {"annual_income": 41520.14278096254, "credit_history_length": 11.941321157179043, "credit_utilization": 0.39893496200506595, "debt_to_income": 0.39928410211971743, "employment_length": 6.02980269297427, "home_ownership_code": 0.685575256632449, "interest_rate": 13.237725636581787, "loan_amount": 11862.81042527663, "loan_term_months": 43.02306359152113, "loan_to_income": 0.36833871689718417, "monthly_payment_est": 363.3576380394146, "num_delinquencies_2y": 0.29762698306892416, "num_open_accounts": 8.997000399946673, "num_recent_inquiries": 1.1066524463404879, "payment_to_income": 0.13525104002537258, "stress_flag": 0.011065191307825623, "thin_file_flag": 0.0003332888948140248}, "stds": {"annual_income": 22243.983010615084, "credit_history_length": 6.911111591976252, "credit_utilization": 0.21392786297906896, "debt_to_income": 0.22331647771554108, "employment_length": 4.320435464575051, "home_ownership_code": 0.690959770181123, "interest_rate": 3.0125560343874085, "loan_amount": 7979.923015516361, "loan_term_months": 10.919617764815778, "loan_to_income": 0.3387713508177818, "monthly_payment_est": 255.5650659941738, "num_delinquencies_2y": 0.5458813994568772, "num_open_accounts": 2.98297353756138, "num_recent_inquiries": 1.052623644972164, "payment_to_income": 0.12797734784446133, "stress_flag": 0.1046111003544664, "thin_file_flag": 0.018253767383752558}, "calib_x": [0.023693532634940118, 0.0298626254597257, 0.030596286236422413, 0.03464803201725824, 0.03680182037425144, 0.037296920604639947, 0.03771299033819354, 0.03917058059378993, 0.04033036437417499, 0.040538517883963864, 0.04083759333010832, 0.04340524938388905, 0.04341803452811143, 0.04649021227916362, 0.048824292358153214, 0.049516596670835765, 0.04957945194333223, 0.049937937317863744, 0.0517777243006257, 0.05186137103887317, 0.053791225653557026, 0.05392233720619562, 0.05438457448953319, 0.0548879673231043, 0.0549559027440107, 0.05548079302137494, 0.05567004761703895, 0.05618718228048016, 0.05673275952975681, 0.05675887933625309, 0.057217837023494394, 0.05754917784166734, 0.05756593120685519, 0.05759525485101208, 0.05787569033955063, 0.058136942347321925, 0.05844740527774634, 0.05923225370564915, 0.0593613965749856, 0.05967953807129107, 0.0602984732579457, 0.06072213199262399, 0.06092969124575199, 0.06149227372872865, 0.06169871590867245, 0.06170700092214464, 0.0617407983009893, 0.061754396121712185, 0.06357991950378351, 0.08311933260345236, 0.0959127882364339, 0.10043089085743932, 0.12564789186527114, 0.14795193585795385, 0.19737615362778071, 0.256378209572815, 0.25823211793019835, 0.25920786760007253, 0.31070276006515707, 0.33627633529513995, 0.3419106436933085, 0.3433142355642121, 0.4363074786773829, 0.4556284409892683, 0.48380769086726827, 0.5002586804412189, 0.5665717539243034, 0.6086106088154172, 0.6248759870130544, 0.6321235810169146, 0.6344624427439147, 0.6351395507393375, 0.6560778529062651, 0.7117461166038999, 0.7331974892344272, 0.7920444471574373, 0.7966611026089785, 0.8061704562314078, 0.817933521894148, 0.9046384692816634, 0.9107095369403311, 0.928419383162781, 0.9345021393222406, 0.9656131086500332, 0.9656224411242379, 0.9665312306105297, 0.9668266458887365, 0.967268135425523, 0.9680110574607131, 0.9702930779481612, 0.9715399459553422, 0.9739962827670479, 0.9761068817702158, 0.9761348630268782, 0.9820907856469326, 0.9834310915942864, 0.9840846970644184, 0.9912868668521612, 0.9916996577960475, 0.9969835748458693], "calib_y": [0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.005, 0.028985507246376805, 0.030769230769230764, 0.05, 0.05, 0.05128205128205128, 0.07065217391304349, 0.0727650727650728, 0.07692307692307693, 0.09090909090909091, 0.09498680738786279, 0.10047846889952154, 0.1111111111111111, 0.14285714285714285, 0.14369501466275664, 0.15384615384615388, 0.17894736842105263, 0.23076923076923078, 0.2500000000000001, 0.2826086956521739, 0.29113924050632917, 0.29411764705882354, 0.3157894736842105, 0.3333333333333333, 0.3697478991596639, 0.3716475095785441, 0.41935483870967744, 0.44545454545454544, 0.4666666666666667, 0.5277777777777778, 0.5666666666666667, 0.6150793650793651, 0.6923076923076923, 0.78125, 0.8888888888888888, 0.8888888888888888, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995, 0.995], "risk_bands": [["A", 0.03, "APPROVE"], ["B", 0.07, "APPROVE"], ["C", 0.13, "REFER"], ["D", 0.22, "REFER"], ["E", 0.35, "DECLINE"], ["F", 1.01, "DECLINE"]], "decision_margin": 0.02, "metrics": {"auc": 0.7948, "gini": 0.5897, "ks": 0.4446, "brier": 0.1865, "default_rate": 0.2152, "n": 4999, "brier_calibrated": 0.1334, "brier_uncalibrated": 0.1865}};
+const LABELS = {
+  loan_amount:"requested loan amount", annual_income:"annual income", employment_length:"length of employment",
+  debt_to_income:"debt-to-income ratio", credit_utilization:"credit utilisation", num_delinquencies_2y:"recent delinquencies",
+  num_open_accounts:"number of open accounts", credit_history_length:"credit history length", num_recent_inquiries:"recent credit inquiries",
+  loan_term_months:"loan term", interest_rate:"offered interest rate", home_ownership_code:"home ownership status",
+  loan_to_income:"loan vs income", monthly_payment_est:"est. monthly payment", payment_to_income:"repayment burden",
+  stress_flag:"high utilisation + delinquency", thin_file_flag:"limited credit file"
+};
+const PRESETS = {
+  prime:{loan_amount:8000,annual_income:82000,employment_length:11,debt_to_income:0.12,credit_utilization:0.15,num_delinquencies_2y:0,num_open_accounts:7,credit_history_length:16,num_recent_inquiries:0,loan_term_months:36,interest_rate:6.4,home_ownership_code:2},
+  middle:{loan_amount:15000,annual_income:45000,employment_length:5,debt_to_income:0.28,credit_utilization:0.40,num_delinquencies_2y:0,num_open_accounts:8,credit_history_length:9,num_recent_inquiries:1,loan_term_months:36,interest_rate:11.5,home_ownership_code:1},
+  stretch:{loan_amount:18000,annual_income:39000,employment_length:3,debt_to_income:0.34,credit_utilization:0.58,num_delinquencies_2y:0,num_open_accounts:9,credit_history_length:6,num_recent_inquiries:2,loan_term_months:60,interest_rate:15.0,home_ownership_code:0},
+  high:{loan_amount:25000,annual_income:38000,employment_length:2,debt_to_income:0.55,credit_utilization:0.92,num_delinquencies_2y:2,num_open_accounts:6,credit_history_length:3,num_recent_inquiries:4,loan_term_months:60,interest_rate:24.5,home_ownership_code:0}
+};
+const RAW = MODEL.features, ALL = MODEL.all_features;
+const BOUNDS = {loan_amount:[500,100000],annual_income:[1,5000000],employment_length:[0,60],debt_to_income:[0,5],credit_utilization:[0,3],num_delinquencies_2y:[0,50],num_open_accounts:[0,100],credit_history_length:[0,80],num_recent_inquiries:[0,50],loan_term_months:[12,84],interest_rate:[0,60],home_ownership_code:[0,2]};
+const INTS = new Set(["num_delinquencies_2y","num_open_accounts","num_recent_inquiries","home_ownership_code","loan_term_months"]);
+const ALIASES = {
+  loan_amount:["loanamount","loan","amount","principal","loanamt","loansize"],
+  annual_income:["annualincome","income","grosssalary","salary","yearlyincome","grossincome","wage"],
+  employment_length:["employmentlength","employment","emplength","yearsemployed","jobyears","tenure","yearsinjob"],
+  debt_to_income:["debttoincome","dti","debtincome","debtratio"],
+  credit_utilization:["creditutilization","creditutilisation","utilization","utilisation","util","creditutil","revolvingutil"],
+  num_delinquencies_2y:["numdelinquencies2y","delinquencies","delinq","numdelinq","delinquencies2y","pastdue","latepayments"],
+  num_open_accounts:["numopenaccounts","openaccounts","openacc","accounts","numaccounts","tradelines"],
+  credit_history_length:["credithistorylength","credithistory","historylength","creditage","historyyrs","credithistoryyrs"],
+  num_recent_inquiries:["numrecentinquiries","inquiries","inq","recentinquiries","hardinquiries","enquiries"],
+  loan_term_months:["loantermmonths","term","loanterm","termmonths","duration"],
+  interest_rate:["interestrate","interest","rate","apr","intrate"],
+  home_ownership_code:["homeownershipcode","homeownership","ownership","home","housing","hometype"]
+};
+function norm(h){ return String(h).toLowerCase().replace(/[^a-z0-9]/g,""); }
+
+function engineer(r){
+  const mi=r.annual_income/12, lti=r.loan_amount/Math.max(r.annual_income,1);
+  const rate=(r.interest_rate/100)/12, n=Math.max(r.loan_term_months,1);
+  const factor=rate>0?rate/(1-Math.pow(1+rate,-n)):1/n, mpe=r.loan_amount*factor;
+  return {...r, loan_to_income:lti, monthly_payment_est:mpe, payment_to_income:mpe/Math.max(mi,1),
+    stress_flag:(r.credit_utilization>0.8&&r.num_delinquencies_2y>0)?1:0,
+    thin_file_flag:(r.credit_history_length<3&&r.num_open_accounts<3)?1:0};
+}
+const sigmoid=z=>1/(1+Math.exp(-Math.max(-35,Math.min(35,z))));
+function score(raw){
+  const e=engineer(raw);
+  const xstd=ALL.map(f=>(e[f]-MODEL.means[f])/(MODEL.stds[f]||1));
+  let logit=MODEL.b; for(let i=0;i<ALL.length;i++) logit+=MODEL.w[i]*xstd[i];
+  const rawpd=sigmoid(logit);
+  let idx=MODEL.calib_x.findIndex(v=>v>=rawpd); if(idx<0) idx=MODEL.calib_y.length-1;
+  const pd=MODEL.calib_y[idx];
+  let grade="F",decision="DECLINE";
+  for(const [g,up,dec] of MODEL.risk_bands){ if(pd<up){grade=g;decision=dec;break;} }
+  const bounds=MODEL.risk_bands.slice(0,-1).map(b=>b[1]);
+  const near=bounds.some(b=>Math.abs(pd-b)<=MODEL.decision_margin);
+  const final=(near&&decision!=="REFER")?"REFER":decision;
+  const nearest=Math.min(...bounds.map(b=>Math.abs(pd-b)));
+  const conf=Math.min(1,nearest/(MODEL.decision_margin*3));
+  const contrib=ALL.map((f,i)=>({feature:f,label:LABELS[f],c:MODEL.w[i]*xstd[i],value:e[f]}));
+  contrib.sort((a,b)=>Math.abs(b.c)-Math.abs(a.c));
+  const up=[],down=[];
+  for(const it of contrib){ if(it.c>0&&up.length<4)up.push(it); else if(it.c<0&&down.length<4)down.push(it); }
+  return {pd,grade,decision:final,auto:decision,human_review:near||final==="REFER",confidence:conf,up,down,contrib};
+}
+function templateMemo(raw,res){
+  const up=res.up.slice(0,3).map(r=>r.label).join(", ")||"no material adverse factors";
+  const down=res.down.slice(0,3).map(r=>r.label).join(", ")||"limited mitigating factors";
+  const rev=res.human_review?" This case is referred for human review.":"";
+  return `Decision: ${res.decision} (risk grade ${res.grade}, PD ${(res.pd*100).toFixed(1)}%, confidence ${Math.round(res.confidence*100)}%). The primary factors increasing estimated default risk were ${up}. Factors reducing risk included ${down}.${rev} This memo narrates a model-generated decision and does not constitute financial advice; declines are subject to the firm's adverse-action and appeals process.`;
+}
+function payloadFor(raw,res){
+  return {decision:{decision:res.decision,risk_grade:res.grade,pd:+res.pd.toFixed(4),confidence:+res.confidence.toFixed(2),human_review:res.human_review},
+    reasons:{increases_risk:res.up.map(r=>({label:r.label,value:r.value})), reduces_risk:res.down.map(r=>({label:r.label,value:r.value}))},
+    applicant:raw};
+}
+const SYSTEM_PROMPT="You are a credit risk analyst assistant. Write a concise, factual credit memo (max 150 words) explaining a lending decision that has ALREADY been made by a governed model. Use only the structured facts provided. Do not invent figures. Be neutral and professional. State the decision, the key drivers, and any recommended conditions or human-review note.";
+function detectProvider(k){ return k.startsWith("sk-ant-")?"anthropic":"openai"; }
+const MODELS={openai:["gpt-4o-mini","gpt-4o","gpt-4.1-mini"], anthropic:["claude-3-5-haiku-20241022","claude-3-5-sonnet-20241022"]};
+async function llmMemo(payload,key){
+  const provider=detectProvider(key), model=document.getElementById("api-model").value;
+  const user="Produce the credit memo from these facts as JSON:\n"+JSON.stringify(payload);
+  if(provider==="openai"){
+    const r=await fetch("https://api.openai.com/v1/chat/completions",{method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
+      body:JSON.stringify({model,temperature:0.2,max_tokens:600,messages:[{role:"system",content:SYSTEM_PROMPT},{role:"user",content:user}]})});
+    if(!r.ok) throw new Error("OpenAI "+r.status+": "+(await r.text()).slice(0,140));
+    const j=await r.json(); return {text:j.choices[0].message.content.trim(),provider:"openai",model};
+  } else {
+    const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+      headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body:JSON.stringify({model,max_tokens:600,temperature:0.2,system:SYSTEM_PROMPT,messages:[{role:"user",content:user}]})});
+    if(!r.ok) throw new Error("Anthropic "+r.status+": "+(await r.text()).slice(0,140));
+    const j=await r.json(); return {text:j.content.map(b=>b.text).join("").trim(),provider:"anthropic",model};
+  }
+}
+
+const COLORS={APPROVE:["var(--green)","var(--green-bg)"],REFER:["var(--amber)","var(--amber-bg)"],DECLINE:["var(--red)","var(--red-bg)"]};
+const HEX={APPROVE:"#1faa6e",REFER:"#d99417",DECLINE:"#e2514f"};
+function fmt(id,v){
+  const m={loan_amount:"£"+(+v).toLocaleString(),annual_income:"£"+(+v).toLocaleString(),debt_to_income:(+v).toFixed(2),credit_utilization:(+v).toFixed(2),interest_rate:(+v).toFixed(1)+"%"};
+  return m[id]!==undefined?m[id]:v;
+}
+function readForm(){ const r={}; for(const f of RAW){ r[f]=parseFloat(document.getElementById(f).value); } return r; }
+let CURRENT={raw:null,res:null,memo:"",memoSrc:"template"};
+function renderContrib(res){
+  const top=res.contrib.slice(0,6), max=Math.max(...top.map(t=>Math.abs(t.c)))||1;
+  document.getElementById("r-contrib").innerHTML=top.map(t=>{
+    const w=Math.abs(t.c)/max*50, pos=t.c>0;
+    const style=pos?`left:50%; width:${w}%; background:var(--red);`:`right:50%; width:${w}%; background:var(--green);`;
+    return `<div class="crow"><span class="lbl" title="${t.label}">${t.label}</span><div class="ctrack"><div class="mid"></div><div class="cfill" style="${style}"></div></div></div>`;
+  }).join("");
+}
+function renderResult(){
+  const raw=readForm();
+  for(const f of RAW){ const o=document.getElementById("o-"+f); if(o)o.textContent=fmt(f,raw[f]); }
+  const res=score(raw);
+  CURRENT={raw,res,memo:templateMemo(raw,res),memoSrc:"template"};
+  const [fg,bg]=COLORS[res.decision];
+  const vd=document.getElementById("verdict"); vd.style.background=bg; vd.style.borderColor=fg;
+  document.getElementById("r-dec").textContent=res.decision; document.getElementById("r-dec").style.color=fg;
+  document.getElementById("r-grade").textContent="Risk grade "+res.grade;
+  const badge=document.getElementById("r-badge"); badge.textContent=res.decision; badge.style.background=fg; badge.style.color="#fff";
+  document.getElementById("r-pd").textContent=(res.pd*100).toFixed(1)+"%";
+  document.getElementById("r-conf").textContent=Math.round(res.confidence*100)+"%";
+  const bar=document.getElementById("r-bar"); bar.style.width=Math.max(2,res.pd*100)+"%"; bar.style.background=fg;
+  document.getElementById("r-review").style.display=res.human_review?"block":"none";
+  renderContrib(res);
+  document.getElementById("r-memo").textContent=CURRENT.memo;
+  document.getElementById("memo-src").textContent="AI credit memo · template";
+  const lw=document.getElementById("letter-wrap"); if(lw) lw.style.display="none";
+}
+function setPreset(p){ const d=PRESETS[p]; for(const f of RAW){ const el=document.getElementById(f); if(el)el.value=d[f]; } renderResult(); }
+document.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>setPreset(c.dataset.preset)));
+document.querySelectorAll("#demo input, #demo select").forEach(el=>el.addEventListener("input",renderResult));
+
+/* ---- API key ---- */
+function refreshModelOptions(){
+  const k=document.getElementById("api-key").value.trim(), sel=document.getElementById("api-model");
+  const provider=k?detectProvider(k):"openai";
+  sel.innerHTML=MODELS[provider].map(m=>`<option value="${m}">${m}</option>`).join("");
+}
+function updateKeyStatus(){
+  const k=document.getElementById("api-key").value.trim(), s=document.getElementById("key-status");
+  if(!k){ s.textContent="Template mode"; s.className="keystatus"; }
+  else { s.textContent=detectProvider(k)==="anthropic"?"Anthropic key set":"OpenAI key set"; s.className="keystatus ok"; }
+  refreshModelOptions();
+  if(document.getElementById("remember-key").checked && k){ try{localStorage.setItem("cre_key",k);}catch(e){} }
+}
+document.getElementById("api-key").addEventListener("input",updateKeyStatus);
+document.getElementById("remember-key").addEventListener("change",()=>{
+  const k=document.getElementById("api-key").value.trim();
+  try{ document.getElementById("remember-key").checked&&k?localStorage.setItem("cre_key",k):localStorage.removeItem("cre_key"); }catch(e){}
+});
+document.getElementById("gen-memo").addEventListener("click",async()=>{
+  const key=document.getElementById("api-key").value.trim(), btn=document.getElementById("gen-memo"), src=document.getElementById("memo-src");
+  if(!key){ document.getElementById("r-memo").textContent=CURRENT.memo; src.textContent="AI credit memo · template (add a key above for a real LLM memo)"; return; }
+  btn.disabled=true; const old=btn.textContent; btn.innerHTML='<span class="spin"></span> Generating'; src.textContent="AI credit memo · calling "+detectProvider(key)+"…";
+  try{
+    const out=await llmMemo(payloadFor(CURRENT.raw,CURRENT.res),key);
+    CURRENT.memo=out.text; CURRENT.memoSrc=out.provider;
+    document.getElementById("r-memo").textContent=out.text; src.textContent="AI credit memo · "+out.provider+" ("+out.model+")";
+  }catch(e){ document.getElementById("r-memo").textContent=CURRENT.memo; src.textContent="AI credit memo · template (LLM error: "+e.message+")"; }
+  finally{ btn.disabled=false; btn.textContent=old; }
+});
+document.getElementById("copy-memo").addEventListener("click",()=>{
+  navigator.clipboard.writeText(document.getElementById("r-memo").textContent).then(()=>{ const b=document.getElementById("copy-memo"),t=b.textContent; b.textContent="Copied"; setTimeout(()=>b.textContent=t,1200); });
+});
+document.getElementById("export-memo").addEventListener("click",()=>{
+  const data={...payloadFor(CURRENT.raw,CURRENT.res),credit_memo:document.getElementById("r-memo").textContent,memo_source:CURRENT.memoSrc,model_version:MODEL.version};
+  download("credit_decision.json",JSON.stringify(data,null,2),"application/json");
+});
+
+/* ---- single PDF ---- */
+function singlePDF(){
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"pt",format:"a4"}); const W=doc.internal.pageSize.getWidth();
+  const raw=CURRENT.raw,res=CURRENT.res; let y=54;
+  doc.setFontSize(18); doc.setTextColor(20); doc.text("Credit Decision Report",40,y);
+  doc.setFontSize(9); doc.setTextColor(120); y+=16; doc.text("Model version "+MODEL.version+"  ·  generated "+new Date().toISOString().slice(0,16).replace("T"," "),40,y);
+  y+=24; doc.setDrawColor(220); doc.line(40,y,W-40,y); y+=24;
+  const col=HEX[res.decision]; const rgb=hexRgb(col);
+  doc.setFillColor(rgb[0],rgb[1],rgb[2]); doc.roundedRect(40,y-16,W-80,46,6,6,"F");
+  doc.setTextColor(255); doc.setFontSize(16); doc.text(res.decision+"  ·  Grade "+res.grade,54,y+6);
+  doc.setFontSize(11); doc.text("PD "+(res.pd*100).toFixed(1)+"%   Confidence "+Math.round(res.confidence*100)+"%",54,y+22);
+  y+=58; doc.setTextColor(20); doc.setFontSize(13); doc.text("Applicant",40,y); y+=8;
+  const rows=RAW.map(f=>[LABELS[f],String(typeof raw[f]==="number"?(Math.abs(raw[f])>=1000?Math.round(raw[f]).toLocaleString():raw[f]):raw[f])]);
+  doc.setFontSize(10); doc.setTextColor(70);
+  rows.forEach((r,i)=>{ const yy=y+18+Math.floor(i/2)*16; const xx=i%2?W/2:48; doc.setTextColor(120); doc.text(r[0]+":",xx,yy); doc.setTextColor(30); doc.text(r[1],xx+150,yy); });
+  y=y+18+Math.ceil(rows.length/2)*16+18;
+  doc.setTextColor(20); doc.setFontSize(13); doc.text("Why",40,y); y+=18;
+  doc.setFontSize(10);
+  doc.setTextColor(180,60,60); doc.text("Increases risk: "+(res.up.map(r=>r.label).join(", ")||"none"),48,y,{maxWidth:W-90}); y+=16;
+  doc.setTextColor(40,140,90); doc.text("Reduces risk: "+(res.down.map(r=>r.label).join(", ")||"none"),48,y,{maxWidth:W-90}); y+=24;
+  doc.setTextColor(20); doc.setFontSize(13); doc.text("Credit memo",40,y); y+=16;
+  doc.setFontSize(10); doc.setTextColor(60);
+  doc.text(doc.splitTextToSize(document.getElementById("r-memo").textContent,W-80),40,y);
+  doc.setFontSize(8); doc.setTextColor(150); doc.text("Decision support only — not financial advice. Risk bands require Credit Risk Committee sign-off.",40,doc.internal.pageSize.getHeight()-30);
+  doc.save("credit_decision_"+res.decision+".pdf");
+}
+function hexRgb(h){ return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]; }
+document.getElementById("export-pdf").addEventListener("click",singlePDF);
+
+/* ---- applicant decision letters ---- */
+const FIRM="Northgate Consumer Finance";
+function gbp(v){ return "£"+Math.round(v).toLocaleString(); }
+function offer(raw){
+  const amount=raw.loan_amount, term=raw.loan_term_months, apr=raw.interest_rate;
+  const r=(apr/100)/12, n=Math.max(term,1);
+  const monthly=r>0? amount*(r/(1-Math.pow(1+r,-n))) : amount/n;
+  const total=monthly*n; return {amount,term,apr,monthly,total,interest:total-amount};
+}
+function customerReasons(res){ return res.up.slice(0,3).map(r=>r.label); }
+function letterTemplate(raw,res,name){
+  const who=(name&&name.trim())?name.trim():"Applicant";
+  const o=offer(raw), ref="CRE-"+MODEL.version.slice(0,15);
+  if(res.decision==="APPROVE"){
+    return `Dear ${who},
+
+Congratulations - we are pleased to confirm that your loan application has been APPROVED.
+
+Your indicative offer
+  Loan amount:                 ${gbp(o.amount)}
+  Term:                        ${o.term} months
+  Interest rate (APR):         ${o.apr.toFixed(1)}%
+  Estimated monthly repayment: ${gbp(o.monthly)}
+  Total repayable:             ${gbp(o.total)} (including ${gbp(o.interest)} interest)
+  Assigned risk grade:         ${res.grade}
+
+What happens next
+  1. Review and sign your credit agreement.
+  2. We complete final identity and affordability verification.
+  3. Funds are typically released within 1-3 working days of signing.
+
+This offer is indicative and subject to final verification and our standard
+affordability checks.
+
+Thank you for choosing ${FIRM}.
+
+Yours sincerely,
+Lending Team, ${FIRM}
+Reference: ${ref}`;
+  }
+  if(res.decision==="DECLINE"){
+    const rs=customerReasons(res).map(r=>"  - "+r).join("\n");
+    return `Dear ${who},
+
+Thank you for your recent loan application. After careful assessment, we are sorry
+to tell you that we are unable to approve your application at this time.
+
+Main factors in this decision
+${rs}
+
+Your rights
+  - This decision was made with the support of an automated model.
+  - You may request a manual review of this decision.
+  - You may ask for further explanation of the factors above.
+  - You can obtain a free copy of your credit file from a credit reference agency.
+
+Improving a future application
+  Reducing your credit utilisation and debt-to-income, avoiding new credit
+  applications for a few months, and maintaining on-time payments can all help.
+
+We appreciate your interest in ${FIRM} and welcome a future application.
+
+Yours sincerely,
+Lending Team, ${FIRM}
+Reference: ${ref}`;
+  }
+  return `Dear ${who},
+
+Thank you for your loan application. Before we can confirm a decision, your
+application needs a brief manual review by one of our underwriters.
+
+  Requested amount:  ${gbp(o.amount)} over ${o.term} months
+  Status:            Referred for human review
+
+A member of our team will be in touch shortly. No action is needed from you
+right now.
+
+Yours sincerely,
+Lending Team, ${FIRM}
+Reference: ${ref}`;
+}
+async function llmRaw(system,user,key){
+  const provider=detectProvider(key), model=document.getElementById("api-model").value;
+  if(provider==="openai"){
+    const r=await fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},body:JSON.stringify({model,temperature:0.3,max_tokens:600,messages:[{role:"system",content:system},{role:"user",content:user}]})});
+    if(!r.ok) throw new Error("OpenAI "+r.status); const j=await r.json(); return {text:j.choices[0].message.content.trim(),provider:"openai"};
+  } else {
+    const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model,max_tokens:600,temperature:0.3,system,messages:[{role:"user",content:user}]})});
+    if(!r.ok) throw new Error("Anthropic "+r.status); const j=await r.json(); return {text:j.content.map(b=>b.text).join("").trim(),provider:"anthropic"};
+  }
+}
+async function buildLetter(raw,res,name){
+  const key=document.getElementById("api-key").value.trim();
+  if(key){
+    try{
+      const sys="You are a UK consumer-lending officer writing a short, warm, compliant decision letter to a loan applicant. Use ONLY the facts provided and never invent figures. For an approval, restate the exact offer figures (amount, term, APR, monthly repayment, total repayable). For a decline, be empathetic, give the main factors, and mention the right to a manual review and to a free copy of their credit file. Sign off from the Lending Team. Max 180 words, plain text, no markdown.";
+      const facts={firm:FIRM,name:name||"Applicant",decision:res.decision,risk_grade:res.grade,offer:offer(raw),main_factors:customerReasons(res)};
+      const out=await llmRaw(sys,"Write the decision letter from these facts as JSON:\n"+JSON.stringify(facts),key);
+      return {text:out.text,source:out.provider};
+    }catch(e){ return {text:letterTemplate(raw,res,name),source:"template (LLM error: "+e.message+")"}; }
+  }
+  return {text:letterTemplate(raw,res,name),source:"template"};
+}
+function letterPDF(text,res){
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"pt",format:"a4"}); const W=doc.internal.pageSize.getWidth();
+  let y=54; doc.setFontSize(16); doc.setTextColor(20); doc.text(FIRM,40,y);
+  doc.setFontSize(9); doc.setTextColor(120); y+=15; doc.text("Lending decision  ·  "+new Date().toISOString().slice(0,10),40,y);
+  y+=16; doc.setDrawColor(220); doc.line(40,y,W-40,y); y+=22;
+  doc.setFontSize(11); doc.setTextColor(35);
+  doc.text(doc.splitTextToSize(text,W-80),40,y);
+  doc.setFontSize(8); doc.setTextColor(150);
+  doc.text("Automated decision support. Indicative only and subject to final checks. Risk bands require Credit Risk Committee sign-off.",40,doc.internal.pageSize.getHeight()-26,{maxWidth:W-80});
+  doc.save("decision_letter_"+res.decision+".pdf");
+}
+document.getElementById("letter-btn").addEventListener("click",async()=>{
+  const btn=document.getElementById("letter-btn"); const name=document.getElementById("app_name").value;
+  btn.disabled=true; const old=btn.textContent; btn.innerHTML='<span class="spin"></span> Writing';
+  try{
+    const out=await buildLetter(CURRENT.raw,CURRENT.res,name);
+    CURRENT.letter=out.text;
+    document.getElementById("letter-text").textContent=out.text;
+    document.getElementById("letter-src").textContent="Applicant decision letter · "+out.source;
+    document.getElementById("letter-wrap").style.display="block";
+  }finally{ btn.disabled=false; btn.textContent=old; }
+});
+document.getElementById("letter-pdf").addEventListener("click",()=>{
+  const text=CURRENT.letter||letterTemplate(CURRENT.raw,CURRENT.res,document.getElementById("app_name").value);
+  letterPDF(text,CURRENT.res);
+});
+document.getElementById("letter-email").addEventListener("click",()=>{
+  const text=CURRENT.letter||letterTemplate(CURRENT.raw,CURRENT.res,document.getElementById("app_name").value);
+  const email=document.getElementById("app_email").value.trim();
+  const subj=FIRM+" — your loan application ("+CURRENT.res.decision+")";
+  window.location.href="mailto:"+encodeURIComponent(email)+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(text);
+});
+document.getElementById("letter-copy").addEventListener("click",()=>{
+  navigator.clipboard.writeText(document.getElementById("letter-text").textContent).then(()=>{ const b=document.getElementById("letter-copy"),t=b.textContent; b.textContent="Copied"; setTimeout(()=>b.textContent=t,1200); });
+});
+
+/* ---- theme ---- */
+function setTheme(t){ document.documentElement.setAttribute("data-theme",t); try{localStorage.setItem("cre_theme",t);}catch(e){} }
+document.getElementById("theme-btn").addEventListener("click",()=>setTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark"));
+
+/* ---- CSV parse + auto-clean ---- */
+function download(name,text,type){ const b=new Blob([text],{type:type||"text/csv"}),u=URL.createObjectURL(b),a=document.createElement("a"); a.href=u; a.download=name; a.click(); URL.revokeObjectURL(u); }
+function parseCSV(text){
+  const lines=text.trim().split(/\r?\n/);
+  const split=l=>{ const out=[]; let cur="",q=false; for(const ch of l){ if(ch==='"'){q=!q;} else if(ch===','&&!q){out.push(cur);cur="";} else cur+=ch; } out.push(cur); return out.map(s=>s.trim().replace(/^"|"$/g,"")); };
+  const headers=split(lines[0]);
+  const rows=lines.slice(1).filter(l=>l.trim()).map(l=>{ const c=split(l),o={}; headers.forEach((h,i)=>o[h]=c[i]); return o; });
+  return {headers,rows};
+}
+function buildHeaderMap(headers){
+  const map={}; const used=new Set();
+  for(const feat of RAW){
+    const al=new Set([norm(feat),...ALIASES[feat]]);
+    const hit=headers.find(h=>!used.has(h)&&al.has(norm(h)));
+    if(hit){ map[feat]=hit; used.add(hit); }
+  }
+  return map;
+}
+function cleanValue(feat,rawVal,stats){
+  if(rawVal===undefined||rawVal===null||String(rawVal).trim()===""){ stats.imputed++; return clip(feat,MODEL.means[feat]); }
+  let s=String(rawVal).trim();
+  if(feat==="home_ownership_code"){ const l=s.toLowerCase(); let v; if(/own/.test(l))v=2; else if(/mort/.test(l))v=1; else if(/rent/.test(l))v=0; else v=parseFloat(l.replace(/[^0-9.\-]/g,"")); if(isNaN(v)){stats.imputed++; v=MODEL.means[feat];} return clip(feat,v,stats); }
+  const pct=s.includes("%");
+  let v=parseFloat(s.replace(/[^0-9.\-]/g,""));
+  if(isNaN(v)){ stats.imputed++; return clip(feat,MODEL.means[feat]); }
+  if(feat==="credit_utilization" && (pct||v>1.5)) v=v/100;
+  if(feat==="debt_to_income" && ((pct&&v>1.5)||v>5)) v=v/100;
+  return clip(feat,v,stats);
+}
+function clip(feat,v,stats){
+  const [lo,hi]=BOUNDS[feat]; let c=Math.max(lo,Math.min(hi,v));
+  if(INTS.has(feat)) c=Math.round(c);
+  if(stats&&c!==v) stats.clipped++;
+  return c;
+}
+function cleanRows(parsed){
+  const {headers,rows}=parsed; const map=buildHeaderMap(headers);
+  const missingCols=RAW.filter(f=>!map[f]);
+  const stats={imputed:0,clipped:0};
+  const cleaned=rows.map(r=>{ const o={}; for(const f of RAW){ o[f]=cleanValue(f, map[f]?r[map[f]]:undefined, stats); } return o; });
+  const unmapped=headers.filter(h=>!Object.values(map).includes(h));
+  return {cleaned,map,missingCols,unmapped,stats,nrows:rows.length};
+}
+function renderCleanReport(c){
+  const el=document.getElementById("clean-report"); el.style.display="block";
+  const mapped=Object.entries(c.map).map(([f,h])=>`<span class="pill map">${h} → ${f}</span>`).join("");
+  const miss=c.missingCols.length?`<div style="margin-top:8px;">Columns not found (filled with training medians): ${c.missingCols.map(f=>`<span class="pill">${f}</span>`).join("")}</div>`:"";
+  const ext=c.unmapped.length?`<div style="margin-top:8px;">Ignored extra columns: ${c.unmapped.map(h=>`<span class="pill">${h}</span>`).join("")}</div>`:"";
+  el.innerHTML=`<b>🧹 Auto-clean report</b> — ${c.nrows} rows · ${Object.keys(c.map).length}/12 columns mapped · ${c.stats.imputed} missing values imputed · ${c.stats.clipped} out-of-range values clipped.
+    <div style="margin-top:8px;">${mapped}</div>${miss}${ext}`;
+}
+
+/* ---- batch scoring + charts ---- */
+let SCORED=[], charts={};
+function destroyCharts(){ Object.values(charts).forEach(c=>{try{c.destroy();}catch(e){}}); charts={}; }
+function runBatch(parsed){
+  const c=cleanRows(parsed); renderCleanReport(c);
+  SCORED=c.cleaned.map(r=>{ const res=score(r); return {...r,pd:+res.pd.toFixed(4),risk_grade:res.grade,decision:res.decision}; });
+  const n=SCORED.length, gc={A:0,B:0,C:0,D:0,E:0,F:0}, dc={APPROVE:0,REFER:0,DECLINE:0};
+  let pdsum=0; SCORED.forEach(s=>{ gc[s.risk_grade]++; dc[s.decision]++; pdsum+=s.pd; });
+  document.getElementById("batch-out").classList.remove("hidden");
+  document.getElementById("b-total").textContent=n;
+  document.getElementById("b-approve").textContent=Math.round(dc.APPROVE/n*100)+"%";
+  document.getElementById("b-decline").textContent=Math.round(dc.DECLINE/n*100)+"%";
+  document.getElementById("b-avgpd").textContent=(pdsum/n*100).toFixed(1)+"%";
+  destroyCharts();
+  if(window.Chart){
+    const gcols=["A","B","C","D","E","F"];
+    charts.grade=new Chart(document.getElementById("ch-grade"),{type:"bar",data:{labels:gcols,datasets:[{data:gcols.map(g=>gc[g]),backgroundColor:["#1faa6e","#5DCAA5","#d99417","#ba7517","#e2514f","#a32d2d"]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+    charts.dec=new Chart(document.getElementById("ch-dec"),{type:"doughnut",data:{labels:["Approve","Refer","Decline"],datasets:[{data:[dc.APPROVE,dc.REFER,dc.DECLINE],backgroundColor:[HEX.APPROVE,HEX.REFER,HEX.DECLINE]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{boxWidth:12}}}}});
+    const bins=Array(10).fill(0); SCORED.forEach(s=>{ const b=Math.min(9,Math.floor(s.pd*10)); bins[b]++; });
+    charts.pd=new Chart(document.getElementById("ch-pd"),{type:"bar",data:{labels:bins.map((_,i)=>(i*10)+"-"+(i*10+10)+"%"),datasets:[{data:bins,backgroundColor:"#4f8cff"}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}},x:{ticks:{maxRotation:60,minRotation:45,font:{size:9}}}}}});
+    const ds=["APPROVE","REFER","DECLINE"].map(d=>({label:d,data:SCORED.filter(s=>s.decision===d).map(s=>({x:+(s.debt_to_income).toFixed(3),y:+(s.pd*100).toFixed(1)})),backgroundColor:HEX[d],pointRadius:2.5}));
+    charts.scatter=new Chart(document.getElementById("ch-scatter"),{type:"scatter",data:{datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{boxWidth:12}}},scales:{x:{title:{display:true,text:"debt-to-income"}},y:{title:{display:true,text:"PD %"},beginAtZero:true}}}});
+  }
+  const keys=["loan_amount","annual_income","debt_to_income","credit_utilization","interest_rate","pd","risk_grade","decision"];
+  let html="<tr>"+keys.map(k=>`<th>${k}</th>`).join("")+"</tr>";
+  SCORED.slice(0,10).forEach(r=>{ html+="<tr>"+keys.map(k=>{ let v=r[k]; if(k==="pd")v=(v*100).toFixed(1)+"%"; else if(typeof v==="number"&&Math.abs(v)>=1000)v=Math.round(v).toLocaleString(); return `<td>${v}</td>`; }).join("")+"</tr>"; });
+  document.getElementById("batch-table").innerHTML=html;
+}
+function randomApplicant(){
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  return {loan_amount:Math.round(rnd(2000,40000)/500)*500,annual_income:Math.round(rnd(18000,120000)/1000)*1000,employment_length:Math.round(rnd(0,25)),debt_to_income:+rnd(0.05,0.9).toFixed(2),credit_utilization:+rnd(0.05,1.1).toFixed(2),num_delinquencies_2y:Math.random()<0.75?0:Math.round(rnd(1,4)),num_open_accounts:Math.round(rnd(2,18)),credit_history_length:Math.round(rnd(1,30)),num_recent_inquiries:Math.round(rnd(0,6)),loan_term_months:Math.random()<0.7?36:60,interest_rate:+rnd(5,30).toFixed(1),home_ownership_code:Math.floor(rnd(0,3))};
+}
+document.getElementById("csv-file").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f)return; const rd=new FileReader();
+  rd.onload=()=>{ try{ runBatch(parseCSV(rd.result)); document.getElementById("batch").scrollIntoView({behavior:"smooth"}); }catch(err){ alert("Could not read CSV: "+err.message); } }; rd.readAsText(f);
+});
+document.getElementById("demo-batch").addEventListener("click",()=>{
+  const rows=Array.from({length:300},randomApplicant);
+  runBatch({headers:RAW.slice(),rows});
+});
+document.getElementById("download-scored").addEventListener("click",()=>{
+  if(!SCORED.length)return; const cols=Object.keys(SCORED[0]);
+  download("scored_applicants.csv",cols.join(",")+"\n"+SCORED.map(r=>cols.map(c=>r[c]).join(",")).join("\n"));
+});
+
+/* ---- portfolio PDF ---- */
+function portfolioPDF(){
+  if(!SCORED.length){ alert("Score a batch first."); return; }
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"pt",format:"a4"}); const W=doc.internal.pageSize.getWidth();
+  const n=SCORED.length, dc={APPROVE:0,REFER:0,DECLINE:0}; let pdsum=0;
+  SCORED.forEach(s=>{dc[s.decision]++;pdsum+=s.pd;});
+  let y=54; doc.setFontSize(18); doc.setTextColor(20); doc.text("Portfolio Risk Report",40,y);
+  doc.setFontSize(9); doc.setTextColor(120); y+=16; doc.text("Model version "+MODEL.version+"  ·  "+n+" applicants  ·  "+new Date().toISOString().slice(0,16).replace("T"," "),40,y);
+  y+=22; doc.setDrawColor(220); doc.line(40,y,W-40,y); y+=22;
+  const cards=[["Applicants",n],["Approve",Math.round(dc.APPROVE/n*100)+"%"],["Refer",Math.round(dc.REFER/n*100)+"%"],["Decline",Math.round(dc.DECLINE/n*100)+"%"],["Avg PD",(pdsum/n*100).toFixed(1)+"%"]];
+  const cw=(W-80)/cards.length;
+  cards.forEach((c,i)=>{ const x=40+i*cw; doc.setDrawColor(225); doc.roundedRect(x,y,cw-8,52,5,5); doc.setFontSize(15); doc.setTextColor(25); doc.text(String(c[1]),x+10,y+26); doc.setFontSize(8); doc.setTextColor(120); doc.text(String(c[0]),x+10,y+42); });
+  y+=72;
+  try{
+    const g=document.getElementById("ch-grade"), d=document.getElementById("ch-dec");
+    if(g){ doc.setFontSize(11); doc.setTextColor(40); doc.text("Risk grade distribution",40,y); doc.addImage(g.toDataURL("image/png",1.0),"PNG",40,y+8,(W-90)/2,150); }
+    if(d){ doc.text("Decision mix",W/2+8,y); doc.addImage(d.toDataURL("image/png",1.0),"PNG",W/2+8,y+8,(W-90)/2,150); }
+    y+=176;
+  }catch(e){}
+  doc.setFontSize(11); doc.setTextColor(40); doc.text("Highest-risk applicants",40,y); y+=8;
+  const top=[...SCORED].sort((a,b)=>b.pd-a.pd).slice(0,8);
+  doc.setFontSize(9); doc.setTextColor(120); doc.text("PD",48,y+16); doc.text("Grade",100,y+16); doc.text("Decision",160,y+16); doc.text("Income",250,y+16); doc.text("DTI",340,y+16); doc.text("Util",410,y+16);
+  doc.setTextColor(40);
+  top.forEach((s,i)=>{ const yy=y+32+i*15; doc.text((s.pd*100).toFixed(1)+"%",48,yy); doc.text(s.risk_grade,100,yy); doc.text(s.decision,160,yy); doc.text("£"+Math.round(s.annual_income).toLocaleString(),250,yy); doc.text(s.debt_to_income.toFixed(2),340,yy); doc.text(s.credit_utilization.toFixed(2),410,yy); });
+  doc.setFontSize(8); doc.setTextColor(150); doc.text("Decision support only — not financial advice. Synthetic/illustrative data. Risk bands require Credit Risk Committee sign-off.",40,doc.internal.pageSize.getHeight()-30);
+  doc.save("portfolio_risk_report.pdf");
+}
+document.getElementById("portfolio-pdf").addEventListener("click",portfolioPDF);
+
+/* ---- init ---- */
+document.getElementById("ver").textContent=MODEL.version;
+document.getElementById("ver2").textContent=MODEL.version;
+document.getElementById("m-auc").textContent=MODEL.metrics.auc.toFixed(3);
+try{ const t=localStorage.getItem("cre_theme"); if(t)document.documentElement.setAttribute("data-theme",t); }catch(e){}
+try{ const k=localStorage.getItem("cre_key"); if(k){ document.getElementById("api-key").value=k; document.getElementById("remember-key").checked=true; } }catch(e){}
+refreshModelOptions(); updateKeyStatus(); setPreset("middle");
+</script>
+<script>/* ---- UI/UX enhancements (non-invasive) ---- */
+(function(){
+  // active-section highlight in the nav
+  var links=[].slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));}).filter(Boolean);
+  function spy(){ var y=window.scrollY+130, cur=null;
+    secs.forEach(function(s){ if(s.offsetTop<=y) cur=s; });
+    links.forEach(function(a){ a.classList.toggle('active', !!cur && a.getAttribute('href')==='#'+cur.id); }); }
+  window.addEventListener('scroll',spy,{passive:true}); window.addEventListener('resize',spy); spy();
+  // gentle reveal-on-scroll
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:.12});
+    [].forEach.call(document.querySelectorAll('.metric, .feat, .chartbox, .bmetric'), function(el,i){ el.style.transitionDelay=(i%4*60)+'ms'; el.classList.add('reveal'); io.observe(el); });
+  }
+  // terminal chrome + copy button on the "Run it" code block
+  var pre=document.querySelector('#run pre');
+  if(pre){
+    var bar=document.createElement('div'); bar.className='term-bar';
+    ['#ff5f56','#ffbd2e','#27c93f'].forEach(function(c){ var d=document.createElement('span'); d.className='term-dot'; d.style.background=c; bar.appendChild(d); });
+    pre.appendChild(bar);
+    var btn=document.createElement('button'); btn.className='btn sm copy-run'; btn.type='button'; btn.textContent='Copy';
+    btn.addEventListener('click',function(){ var code=pre.querySelector('code'); navigator.clipboard.writeText(code?code.textContent:pre.textContent).then(function(){ btn.textContent='Copied'; setTimeout(function(){btn.textContent='Copy';},1200); }); });
+    pre.appendChild(btn);
+  }
+})();</script>
+<script>
+/* ===== Premium app shell: login + left sidebar + client-side view routing ===== */
+(function(){
+  try{
+    var D=document;
+    var DEMO={EMP001:["Alex Carter","Acme Lending"],EMP002:["Priya Shah","Northwind Finance"],EMP003:["Jordan Lee","Sterling Credit Union"]};
+    var NAV=[["overview","Overview","▦"],["kpis","KPIs","📊"],["score","Score applicant","◎"],["batch","Batch & report","▤"],
+             ["monitoring","Monitoring","📈"],["governance","Model & governance","🛡"],
+             ["apikey","API key","🔑"],["how","How it works","❖"]];
+
+    var header=D.querySelector("body > header"),
+        wrap=D.querySelector("body > .wrap"),
+        footer=D.querySelector("body > footer"),
+        keybar=D.querySelector(".keybar"),
+        themeBtn=D.getElementById("theme-btn"),
+        hero=D.querySelector(".hero"),
+        secScore=D.getElementById("demo"),
+        secBatch=D.getElementById("batch"),
+        secHow=D.getElementById("how"),
+        secRun=D.getElementById("run");
+
+    function pct(x){return (x*100).toFixed(1)+"%";}
+    function tile(v,l){return '<div class="metric"><div class="v">'+v+'</div><div class="l">'+l+'</div></div>';}
+    function buildKpis(){
+      var m=MODEL.metrics;
+      return '<div class="sectitle">Dashboard</div><h2>Key performance indicators</h2>'
+        +'<p class="lead">Held-out model performance plus a live snapshot of the most recent batch you scored in this browser.</p>'
+        +'<h3 style="margin-top:6px">Model performance (held-out)</h3>'
+        +'<div class="metrics" style="margin:6px 0 4px">'+tile(m.auc.toFixed(3),"AUC")+tile(m.gini.toFixed(3),"Gini")+tile(m.ks.toFixed(3),"KS statistic")+tile(m.brier_calibrated.toFixed(3),"Brier (calibrated)")+'</div>'
+        +'<h3 style="margin-top:22px">Live portfolio snapshot <span class="pill" id="kpi-src" style="margin-left:6px">no data yet</span></h3>'
+        +'<div class="metrics" id="kpi-portfolio" style="margin:6px 0 4px"></div>'
+        +'<p class="note" id="kpi-note" style="margin-top:14px">Score a batch in <b>Batch &amp; report</b> to populate this snapshot.</p>';
+    }
+    function updateKpis(){
+      var c=D.getElementById("kpi-portfolio"); if(!c) return;
+      var src=D.getElementById("kpi-src"), note=D.getElementById("kpi-note");
+      if(typeof SCORED!=="undefined" && SCORED.length){
+        var n=SCORED.length, dc={APPROVE:0,REFER:0,DECLINE:0}, pdsum=0;
+        SCORED.forEach(function(s){dc[s.decision]++; pdsum+=s.pd;});
+        c.innerHTML=tile(n.toLocaleString(),"Applicants scored")
+          +tile(Math.round(dc.APPROVE/n*100)+'%',"Approve rate")
+          +tile(Math.round(dc.REFER/n*100)+'%',"Refer rate")
+          +tile(Math.round(dc.DECLINE/n*100)+'%',"Decline rate")
+          +tile((pdsum/n*100).toFixed(1)+'%',"Average PD");
+        if(src) src.textContent="last batch";
+        if(note) note.style.display="none";
+      } else {
+        c.innerHTML=tile('—',"Applicants scored")+tile('—',"Approve rate")+tile('—',"Refer rate")+tile('—',"Decline rate")+tile('—',"Average PD");
+        if(src) src.textContent="no data yet";
+        if(note) note.style.display="block";
+      }
+    }
+    function buildOverviewExtra(){
+      var steps=[["1","Validate","schema + range checks"],["2","Engineer","affordability & stress features"],
+        ["3","Model PD","probability of default"],["4","Calibrate","isotonic — 5% means ~5%"],
+        ["5","Decide","grade + APPROVE / REFER / DECLINE"],["6","Explain","ranked reason codes"],
+        ["7","Memo","AI or template credit memo"]];
+      var stepHtml=steps.map(function(s){return '<div class="step"><span class="n">'+s[0]+'</span><div><b>'+s[1]+'</b><span class="muted">'+s[2]+'</span></div></div>';}).join("");
+      return ''
+        +'<section style="margin-top:6px"><div class="sectitle">What it is</div>'
+        +'<h2>An explainable, governed credit decision engine</h2>'
+        +'<p class="lead">It estimates an applicant\'s probability of default (PD), turns it into a risk grade and an APPROVE / REFER / DECLINE decision, explains the drivers behind every call, and routes borderline cases to a human — built to be deployed and defended to a regulator, not just trained in a notebook.</p>'
+        +'<div class="ov-grid3" style="margin-top:6px">'
+        +'<div class="card"><h3>What the model does</h3><p class="muted">A calibrated classifier scores 12 applicant features (plus 5 engineered ones) into a PD, then policy rules map PD → grade → decision, with a human-review margin near each boundary.</p></div>'
+        +'<div class="card"><h3>What the AI does</h3><p class="muted">An optional LLM writes the natural-language credit memo and the applicant decision letter. The AI only narrates a decision the model already made — it never makes the lending call.</p></div>'
+        +'<div class="card"><h3>What it is for</h3><p class="muted">Faster, consistent, auditable underwriting: millisecond scoring, adverse-action reason codes, drift monitoring and a one-click PDF for the credit committee.</p></div>'
+        +'</div></section>'
+        +'<section style="margin-top:26px"><div class="sectitle">How it works</div>'
+        +'<h2>Every applicant flows through one governed pipeline</h2>'
+        +'<div class="steps">'+stepHtml+'</div></section>'
+        +'<section style="margin-top:26px"><div class="sectitle">AI memo</div>'
+        +'<h2>With an API key vs without</h2>'
+        +'<p class="lead">The lending decision is identical either way — the machine-learning model runs locally in your browser. The key only changes <b>who writes the words</b>.</p>'
+        +'<div class="ov-grid2">'
+        +'<div class="card compare"><div class="cmp-h">🔒 Template mode <span class="pill">no key</span></div>'
+        +'<ul><li>Model scores, grades, decides and lists reason codes</li><li>Memo &amp; letter from a faithful deterministic template</li><li>100% offline — nothing leaves your browser</li><li>Ideal for demos, privacy and CI</li></ul></div>'
+        +'<div class="card compare on"><div class="cmp-h">✨ AI mode <span class="pill map">key set</span></div>'
+        +'<ul><li>Same model decision, grade, PD and reason codes</li><li>LLM (OpenAI / Anthropic) writes a fluent memo &amp; decision letter</li><li>Key stays in your browser, sent only to the provider you choose</li><li>Add it under <b>API key</b> in the sidebar</li></ul></div>'
+        +'</div></section>'
+        +'<section style="margin-top:26px"><div class="sectitle">Model insight</div>'
+        +'<h2>What drives a decision</h2>'
+        +'<div class="charts"><div class="chartbox"><h4>Top risk drivers — standardized model weights</h4><div class="cv"><canvas id="ov-drivers"></canvas></div></div>'
+        +'<div class="chartbox"><h4>Risk-band policy — PD ranges by grade</h4><div class="cv"><canvas id="ov-bands"></canvas></div></div></div></section>';
+    }
+    function renderOverviewCharts(){
+      if(!window.Chart) return;
+      var dc=D.getElementById("ov-drivers");
+      if(dc){
+        var items=MODEL.all_features.map(function(f,i){return {label:(LABELS[f]||f),w:MODEL.w[i]};});
+        items.sort(function(a,b){return Math.abs(b.w)-Math.abs(a.w);});
+        items=items.slice(0,10).reverse();
+        new Chart(dc,{type:"bar",data:{labels:items.map(function(x){return x.label;}),
+          datasets:[{data:items.map(function(x){return +x.w.toFixed(3);}),backgroundColor:items.map(function(x){return x.w>0?"#ef5a57":"#1faa6e";}),borderWidth:0}]},
+          options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,
+            plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return (c.raw>0?"increases":"reduces")+" risk ("+c.raw+")";}}}},
+            scales:{x:{ticks:{color:"#8d9ab0"},grid:{color:"#212b3b"},title:{display:true,text:"← reduces   ·   weight   ·   increases →",color:"#8d9ab0"}},
+                    y:{ticks:{color:"#cdd6e4",font:{size:10}},grid:{display:false}}}}});
+      }
+      var bc=D.getElementById("ov-bands");
+      if(bc){
+        var bands=MODEL.risk_bands, lows=[0];
+        for(var i=1;i<bands.length;i++) lows[i]=bands[i-1][1];
+        var cm={APPROVE:"#1faa6e",REFER:"#e0a02a",DECLINE:"#ef5a57"};
+        new Chart(bc,{type:"bar",data:{labels:bands.map(function(b){return "Grade "+b[0];}),
+          datasets:[{data:bands.map(function(b,i){return [lows[i]*100, Math.min(b[1],1)*100];}),backgroundColor:bands.map(function(b){return cm[b[2]];}),borderWidth:0,borderRadius:4}]},
+          options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,
+            plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var b=MODEL.risk_bands[c.dataIndex]; return b[2]+" · PD "+c.raw[0].toFixed(0)+"–"+c.raw[1].toFixed(0)+"%";}}}},
+            scales:{x:{min:0,max:100,ticks:{color:"#8d9ab0",callback:function(v){return v+"%";}},grid:{color:"#212b3b"},title:{display:true,text:"probability of default",color:"#8d9ab0"}},
+                    y:{ticks:{color:"#cdd6e4"},grid:{display:false}}}}});
+      }
+    }
+    function buildMon(){
+      var m=MODEL.metrics;
+      return '<div class="sectitle">Monitoring</div><h2>Model performance &amp; operations</h2>'
+        +'<p class="lead">Held-out discrimination and calibration for the bundled model. Live latency, cost and PSI-drift telemetry are available when you run the full FastAPI + Streamlit service.</p>'
+        +'<div class="metrics" style="margin:6px 0 18px">'+tile(m.auc.toFixed(3),"AUC")+tile(m.gini.toFixed(3),"Gini")+tile(m.ks.toFixed(3),"KS statistic")+tile(m.brier_calibrated.toFixed(3),"Brier (calibrated)")+'</div>'
+        +'<div class="charts"><div class="chartbox"><h4>Calibration curve — raw score vs calibrated PD</h4><div class="cv"><canvas id="mon-calib"></canvas></div></div>'
+        +'<div class="chartbox"><h4>Calibration impact (Brier score — lower is better)</h4><div class="cv"><canvas id="mon-brier"></canvas></div></div></div>'
+        +'<p class="note">Default rate '+pct(m.default_rate)+' across '+m.n.toLocaleString()+' held-out applicants. A lower Brier after calibration means stated PDs are closer to observed default frequencies.</p>';
+    }
+    function buildGov(){
+      var m=MODEL.metrics, col={APPROVE:"var(--green)",REFER:"var(--amber)",DECLINE:"var(--red)"};
+      var bands=MODEL.risk_bands.map(function(b){var up=b[1]>=1?"—":(b[1]*100).toFixed(0)+"%";
+        return '<tr><td><b>'+b[0]+'</b></td><td>'+up+'</td><td><span style="color:'+col[b[2]]+';font-weight:700">'+b[2]+'</span></td></tr>';}).join("");
+      return '<div class="sectitle">Model card</div><h2>Model &amp; governance</h2>'
+        +'<p class="lead">Every decision flows through a governed, versioned pipeline. Bundled model and cut-offs are illustrative on synthetic data — revalidate before production use.</p>'
+        +'<div class="card" style="margin-bottom:16px"><div class="grid2">'
+        +'<div><div class="muted">Model</div><b>'+MODEL.model_name+'</b></div>'
+        +'<div><div class="muted">Version</div><span class="pill">'+MODEL.version+'</span></div>'
+        +'<div><div class="muted">Held-out applicants</div><b>'+m.n.toLocaleString()+'</b></div>'
+        +'<div><div class="muted">Default rate</div><b>'+pct(m.default_rate)+'</b></div></div></div>'
+        +'<div class="metrics" style="margin:0 0 16px">'+tile(m.auc.toFixed(3),"AUC")+tile(m.gini.toFixed(3),"Gini")+tile(m.ks.toFixed(3),"KS")+tile(m.brier_calibrated.toFixed(3),"Brier (cal)")+'</div>'
+        +'<div class="card" style="margin-bottom:16px"><h3>Risk bands &amp; policy</h3>'
+        +'<table><tr><th>Grade</th><th>PD upper bound</th><th>Decision</th></tr>'+bands+'</table>'
+        +'<p class="note" style="margin-top:12px">A &plusmn;'+(MODEL.decision_margin*100).toFixed(0)+'% margin around each boundary routes borderline cases to human review. Cut-offs require Credit Risk Committee sign-off.</p></div>'
+        +'<div class="callout"><b>Honest limitations.</b> Data is synthetic; the bundled model is the dependency-free logistic baseline (the full repo trains XGBoost + SHAP). Fairness / disparate-impact testing is specified in governance but not yet implemented.</div>';
+    }
+    function renderMon(){
+      if(!window.Chart) return;
+      var cc=D.getElementById("mon-calib");
+      if(cc) new Chart(cc,{type:"line",data:{labels:MODEL.calib_x.map(function(x){return (x*100).toFixed(0);}),
+        datasets:[{label:"Calibrated PD",data:MODEL.calib_x.map(function(x,i){return MODEL.calib_y[i]*100;}),borderColor:"#5b8cff",backgroundColor:"rgba(91,140,255,.12)",fill:true,pointRadius:0,tension:.25,borderWidth:2},
+          {label:"Ideal (y = x)",data:MODEL.calib_x.map(function(x){return x*100;}),borderColor:"#8d9ab0",borderDash:[5,4],pointRadius:0,borderWidth:1.5}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#8d9ab0",boxWidth:12}}},
+          scales:{x:{ticks:{color:"#8d9ab0",maxTicksLimit:6},grid:{color:"#212b3b"},title:{display:true,text:"raw score %",color:"#8d9ab0"}},
+                  y:{ticks:{color:"#8d9ab0"},grid:{color:"#212b3b"},title:{display:true,text:"calibrated PD %",color:"#8d9ab0"}}}}});
+      var bc=D.getElementById("mon-brier");
+      if(bc) new Chart(bc,{type:"bar",data:{labels:["Uncalibrated","Calibrated"],datasets:[{data:[MODEL.metrics.brier_uncalibrated,MODEL.metrics.brier_calibrated],backgroundColor:["#6b7686","#5b8cff"]}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:"#8d9ab0"},grid:{display:false}},y:{beginAtZero:true,ticks:{color:"#8d9ab0"},grid:{color:"#212b3b"}}}}});
+    }
+
+    /* ---- login screen ---- */
+    var auth=D.createElement("div"); auth.className="auth hidden"; auth.id="auth";
+    auth.innerHTML='<button class="icon-btn auth-theme" id="auth-theme" title="Toggle theme">◐</button>'
+      +'<div class="auth-card"><div class="auth-brand"><span class="dot"></span> Credit Risk Engine</div>'
+      +'<h1>Sign in to your workspace</h1><p class="auth-sub">Access decisioning, batch reports and model governance.</p>'
+      +'<form id="login-form" autocomplete="on"><label>Employer ID or company name</label>'
+      +'<input class="full" id="login-id" placeholder="EMP001 or Acme Lending" autocomplete="username">'
+      +'<label>Password</label><input class="full" id="login-pw" type="password" placeholder="••••••••" autocomplete="current-password">'
+      +'<div class="auth-err" id="login-err"></div>'
+      +'<button class="btn primary block" type="submit" style="margin-top:6px">Sign in</button></form>'
+      +'<div class="auth-demo">Demo logins (password <code>demo1234</code>): <b>EMP001</b> · <b>EMP002</b> · <b>EMP003</b></div></div>';
+    D.body.appendChild(auth);
+
+    /* ---- app shell ---- */
+    var app=D.createElement("div"); app.className="app hidden"; app.id="app";
+    var aside=D.createElement("aside"); aside.className="sidebar";
+    var navHtml=NAV.map(function(n,i){return '<a class="nav-link'+(i===0?" active":"")+'" data-view="'+n[0]+'"><span class="nav-ico">'+n[2]+'</span> '+n[1]+'</a>';}).join("");
+    aside.innerHTML='<a class="s-brand" data-view="overview"><span class="dot"></span> Credit Risk Engine</a>'
+      +'<nav class="s-nav">'+navHtml+'</nav>'
+      +'<div class="s-foot"><div class="s-user"><span class="s-avatar" id="s-avatar">A</span>'
+      +'<div class="s-meta"><span class="s-name" id="s-name">Analyst</span><span class="s-co" id="s-co">—</span></div></div>'
+      +'<div class="s-foot-row"><span id="theme-slot"></span><button class="btn-logout" id="logout-btn">Log out</button></div></div>';
+    var main=D.createElement("main"); main.className="main";
+    var topbar=D.createElement("div"); topbar.className="topbar";
+    var views=D.createElement("div"); views.className="views";
+    var tbTitle=D.createElement("div"); tbTitle.className="tb-title"; tbTitle.id="tb-title"; tbTitle.textContent="Overview";
+    topbar.appendChild(tbTitle);
+    main.appendChild(topbar); main.appendChild(views);
+    app.appendChild(aside); app.appendChild(main);
+
+    function mkView(id){var v=D.createElement("section"); v.className="view"+(id==="overview"?" active":""); v.id="view-"+id; return v;}
+    var vO=mkView("overview"),vK=mkView("kpis"),vS=mkView("score"),vB=mkView("batch"),vM=mkView("monitoring"),vG=mkView("governance"),vA=mkView("apikey"),vH=mkView("how");
+    if(hero){
+      vO.appendChild(hero);
+      [].forEach.call(hero.querySelectorAll(".cta a"),function(a){var h=a.getAttribute("href")||"";
+        if(h==="#demo")a.setAttribute("data-view","score"); if(h==="#batch")a.setAttribute("data-view","batch");
+        a.removeAttribute("href"); a.style.cursor="pointer";});
+    }
+    var quick=D.createElement("div"); quick.className="quick";
+    quick.innerHTML=[["score","Score an applicant","Manual entry → calibrated PD, grade, reason codes, AI memo and PDF.","◎"],
+      ["batch","Batch & report","Upload any CSV → auto-clean, score every row, charts and PDF.","▤"],
+      ["monitoring","Monitoring","Held-out performance, calibration and drift.","📈"],
+      ["governance","Model & governance","Model card, risk-band policy and limitations.","🛡"]]
+      .map(function(q){return '<a class="feat qcard" data-view="'+q[0]+'"><div class="ic">'+q[3]+'</div><h4>'+q[1]+'</h4><p>'+q[2]+'</p></a>';}).join("");
+    vO.appendChild(quick);
+    var ovx=D.createElement("div"); ovx.className="ov-extra"; ovx.innerHTML=buildOverviewExtra(); vO.appendChild(ovx);
+    if(secScore) vS.appendChild(secScore);
+    if(secBatch) vB.appendChild(secBatch);
+    if(secHow) vH.appendChild(secHow);
+    if(secRun) secRun.remove();
+    vK.innerHTML=buildKpis();
+    vM.innerHTML=buildMon(); vG.innerHTML=buildGov();
+    vA.innerHTML='<div class="sectitle">Settings</div><h2>LLM API key</h2>'
+      +'<p class="lead">Paste an OpenAI or Anthropic key to write real AI credit memos and applicant letters. Without a key, a faithful template memo is used. Your key stays in this browser and is sent only to the provider you choose.</p>'
+      +'<div class="card" id="apikey-card"></div>';
+    [vO,vK,vS,vB,vM,vG,vA,vH].forEach(function(v){views.appendChild(v);});
+    if(footer) main.appendChild(footer);
+    D.body.appendChild(app);
+
+    var apiCard=D.getElementById("apikey-card");
+    if(apiCard && keybar) apiCard.appendChild(keybar);
+    if(themeBtn) D.getElementById("theme-slot").appendChild(themeBtn);
+    if(header) header.remove();
+    if(wrap) wrap.remove();
+    renderMon(); renderOverviewCharts();
+
+    /* ---- routing ---- */
+    function show(id){
+      if(!NAV.some(function(n){return n[0]===id;})) id="overview";
+      views.querySelectorAll(".view").forEach(function(v){v.classList.toggle("active",v.id==="view-"+id);});
+      aside.querySelectorAll(".nav-link").forEach(function(a){a.classList.toggle("active",a.dataset.view===id);});
+      var nv=NAV.filter(function(n){return n[0]===id;})[0];
+      var tt=D.getElementById("tb-title"); if(tt&&nv) tt.textContent=nv[1];
+      if(id==="kpis") updateKpis();
+      try{history.replaceState(null,"","#"+id);}catch(e){}
+      window.scrollTo(0,0);
+    }
+    D.addEventListener("click",function(e){var t=e.target.closest("[data-view]"); if(t&&app.contains(t)){e.preventDefault(); show(t.dataset.view);}});
+
+    /* ---- auth ---- */
+    function setUser(name,co){D.getElementById("s-name").textContent=name; D.getElementById("s-co").textContent=co;
+      D.getElementById("s-avatar").textContent=(name||"A").charAt(0).toUpperCase();}
+    function openApp(u){setUser(u.name,u.co); auth.classList.add("hidden"); app.classList.remove("hidden");
+      show((location.hash||"").replace("#","")||"overview");}
+    function logout(){try{localStorage.removeItem("cre_user");}catch(e){} app.classList.add("hidden"); auth.classList.remove("hidden"); D.getElementById("login-pw").value="";}
+    D.getElementById("login-form").addEventListener("submit",function(e){
+      e.preventDefault();
+      var id=D.getElementById("login-id").value.trim(), pw=D.getElementById("login-pw").value, err=D.getElementById("login-err");
+      if(!id){err.textContent="Enter your Employer ID or company name."; return;}
+      if(!pw){err.textContent="Enter your password."; return;}
+      var known=DEMO[id.toUpperCase()];
+      if(known && pw!=="demo1234"){err.textContent="Invalid credentials. The demo password is demo1234."; return;}
+      err.textContent="";
+      var u=known?{name:known[0],co:known[1]}:{name:id,co:id};
+      try{localStorage.setItem("cre_user",JSON.stringify(u));}catch(e2){}
+      openApp(u);
+    });
+    D.getElementById("logout-btn").addEventListener("click",logout);
+    D.getElementById("auth-theme").addEventListener("click",function(){ if(window.setTheme) setTheme(D.documentElement.getAttribute("data-theme")==="dark"?"light":"dark"); });
+
+    var saved=null; try{saved=JSON.parse(localStorage.getItem("cre_user")||"null");}catch(e){}
+    if(saved&&saved.name) openApp(saved); else auth.classList.remove("hidden");
+  }catch(err){ console.error("shell error",err); D.documentElement.style.visibility="visible"; }
+})();
+</script>
+</body>
+</html>

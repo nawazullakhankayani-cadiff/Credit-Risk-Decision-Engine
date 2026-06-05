@@ -1,0 +1,21 @@
+{
+  "version": "20260604T234806Z-441558d5a41a",
+  "created_utc": "20260604T234806Z",
+  "content_hash": "441558d5a41a",
+  "model_name": "logreg_baseline",
+  "metrics": {
+    "auc": 0.7948,
+    "gini": 0.5897,
+    "ks": 0.4446,
+    "brier": 0.1865,
+    "default_rate": 0.2152,
+    "n": 4999,
+    "brier_calibrated": 0.1334,
+    "brier_uncalibrated": 0.1865
+  },
+  "package_version": "1.0.0",
+  "python": "3.10.12",
+  "rows_total": 25000,
+  "rows_train": 15002,
+  "data_source": "loans.csv"
+}

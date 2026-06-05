@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Credit Risk Engine{% endblock %}
+{% block body %}
+<h1 class="page-title">Welcome, {{ user.full_name }}</h1>
+<p class="page-sub">{{ user.company_name }} · signed in as {{ user.employer_id }}</p>
+
+<div class="grid cols-3">
+  <div class="metric">
+    <div class="value">{{ model_version }}</div>
+    <div class="label">Model version</div>
+  </div>
+  <div class="metric">
+    <div class="value">{{ last_login or "First visit" }}</div>
+    <div class="label">Last login</div>
+  </div>
+  <div class="metric">
+    <div class="value">{{ history|length }}</div>
+    <div class="label">Recorded sessions</div>
+  </div>
+</div>
+
+<div class="grid cols-4">
+  <a class="card" href="/score">
+    <h2>Score an applicant</h2>
+    <p class="muted">Enter applicant details and get a calibrated probability of default,
+    risk grade, decision, reason codes and a credit memo.</p>
+    <span class="btn btn-primary">Open scorer</span>
+  </a>
+  <a class="card" href="/batch">
+    <h2>Batch &amp; report</h2>
+    <p class="muted">Upload a CSV or Excel file. It is auto-cleaned, every applicant scored,
+    and a shareable HTML report generated.</p>
+    <span class="btn btn-primary">Upload a file</span>
+  </a>
+  <a class="card" href="/monitoring">
+    <h2>Monitoring</h2>
+    <p class="muted">Track scoring volume, latency, cost and the live decision mix across
+    recent activity.</p>
+    <span class="btn btn-primary">View monitoring</span>
+  </a>
+  <a class="card" href="/governance">
+    <h2>Model &amp; governance</h2>
+    <p class="muted">Inspect the model manifest, risk bands, performance metrics and the
+    governance documentation.</p>
+    <span class="btn btn-primary">Open governance</span>
+  </a>
+</div>
+
+<div class="card">
+  <h2>Recent login history</h2>
+  <table class="table">
+    <thead>
+      <tr><th>Login (UTC)</th><th>Logout (UTC)</th><th>Status</th><th>IP</th></tr>
+    </thead>
+    <tbody>
+      {% for s in history %}
+      <tr>
+        <td>{{ s.login_utc }}</td>
+        <td>{{ s.logout_utc or "—" }}</td>
+        <td>
+          {% if s.logout_utc %}
+          <span class="pill">Ended</span>
+          {% else %}
+          <span class="tag dec-APPROVE">Active</span>
+          {% endif %}
+        </td>
+        <td>{{ s.ip or "—" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="muted">No sessions recorded yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

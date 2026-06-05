@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Batch &amp; report · Credit Risk Engine{% endblock %}
+{% block body %}
+<h1 class="page-title">Batch scoring &amp; report</h1>
+<p class="page-sub">Upload any CSV or Excel file. Columns are auto-detected and cleaned, every
+applicant is scored, and a shareable interactive report is generated automatically.</p>
+
+{% if error %}<div class="note">{{ error }}</div>{% endif %}
+
+<form method="post" action="/batch" enctype="multipart/form-data">
+  <div class="card">
+    <p><b>Upload applicant file</b> &middot; CSV / XLSX</p>
+    <p class="muted">Messy headers, currency symbols (£/$), percentages and free text are
+    handled for you — just drop in the raw file and we clean it automatically.</p>
+    <input type="file" name="file" accept=".csv,.xlsx,.xls" required>
+    <div style="margin-top:16px">
+      <button class="btn btn-primary" type="submit">Clean, score &amp; generate report</button>
+    </div>
+  </div>
+</form>
+
+{% if summary %}
+<h2 class="page-title">Results</h2>
+<p class="page-sub">Processed <b>{{ summary.filename }}</b> — cleaned
+  <b>{{ "{:,}".format(summary.rows) }}</b> rows, auto-mapped
+  <b>{{ summary.mapped }}/12</b> columns, data-quality <b>{{ summary.quality }}/100</b>.</p>
+
+<div class="grid cols-4">
+  <div class="metric">
+    <div class="value">{{ "{:,}".format(summary.rows) }}</div>
+    <div class="label">Rows scored</div>
+  </div>
+  <div class="metric">
+    <div class="value">{{ summary.mapped }}/12</div>
+    <div class="label">Columns mapped</div>
+  </div>
+  <div class="metric">
+    <div class="value">{{ summary.quality }}/100</div>
+    <div class="label">Data quality</div>
+  </div>
+  <div class="metric">
+    <div class="value">{{ "%.1f"|format(summary.avg_pd) }}%</div>
+    <div class="label">Avg PD</div>
+  </div>
+</div>
+
+<div class="card">
+  <p><b>Decisions breakdown</b></p>
+  <p>
+    <span class="tag dec-APPROVE">Approve {{ summary.decisions.APPROVE }}</span>
+    <span class="tag dec-REFER">Refer {{ summary.decisions.REFER }}</span>
+    <span class="tag dec-DECLINE">Decline {{ summary.decisions.DECLINE }}</span>
+  </p>
+  <div style="margin-top:16px">
+    <a class="btn btn-primary" href="/reports/{{ summary.report_id }}.html" target="_blank">View report</a>
+    <a class="btn" href="/download/{{ summary.report_id }}.html">Download report</a>
+  </div>
+</div>
+
+{% if summary.ingest %}
+<div class="card">
+  <details>
+    <summary><b>Cleaning &amp; ingest detail</b></summary>
+    <table class="table">
+      <thead><tr><th>Step</th><th>Detail</th></tr></thead>
+      <tbody>
+        {% for key, value in summary.ingest.items() %}
+        <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+</div>
+{% endif %}
+{% endif %}
+
+<p class="muted">Generated reports are self-contained HTML — download and publish them
+anywhere. Where source columns are missing, values are imputed from reference defaults
+and flagged in the report.</p>
+{% endblock %}

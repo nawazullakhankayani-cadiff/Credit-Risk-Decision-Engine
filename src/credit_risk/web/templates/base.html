@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Credit Risk Decision Engine{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body class="{{ 'has-sidebar' if user else 'no-sidebar' }}">
+{% if user %}
+<aside class="sidebar">
+  <a class="brand" href="/dashboard"><span class="dot"></span> Credit Risk Engine</a>
+  <nav class="nav">
+    <a class="nav-link {{ 'active' if active=='dashboard' }}" href="/dashboard">
+      <span class="nav-ico">🏠</span> Dashboard</a>
+    <a class="nav-link {{ 'active' if active=='score' }}" href="/score">
+      <span class="nav-ico">🧮</span> Score applicant</a>
+    <a class="nav-link {{ 'active' if active=='batch' }}" href="/batch">
+      <span class="nav-ico">📂</span> Batch &amp; report</a>
+    <a class="nav-link {{ 'active' if active=='monitoring' }}" href="/monitoring">
+      <span class="nav-ico">📈</span> Monitoring</a>
+    <a class="nav-link {{ 'active' if active=='governance' }}" href="/governance">
+      <span class="nav-ico">🛡️</span> Model &amp; governance</a>
+    <a class="nav-link {{ 'active' if active=='sessions' }}" href="/sessions">
+      <span class="nav-ico">🕘</span> Login history</a>
+    <a class="nav-link {{ 'active' if active=='about' }}" href="/about">
+      <span class="nav-ico">ℹ️</span> About</a>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="sidebar-user">
+      <span class="avatar">{{ (user.full_name or user.employer_id)[:1]|upper }}</span>
+      <span class="su-meta">
+        <span class="su-name">{{ user.full_name or user.employer_id }}</span>
+        <span class="su-co">{{ user.company_name }}</span>
+      </span>
+    </div>
+    <a class="btn-logout" href="/logout">Log out</a>
+  </div>
+</aside>
+{% endif %}
+<main class="content">
+  {% block body %}{% endblock %}
+</main>
+</body>
+</html>

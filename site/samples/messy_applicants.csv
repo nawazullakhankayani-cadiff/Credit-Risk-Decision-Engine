@@ -1,0 +1,121 @@
+Applicant ID,Loan Amount,Gross Salary,Years Employed,DTI,Utilisation %,Delinquencies,Open Accounts,Credit History (yrs),Hard Inquiries,Term,APR,Home Ownership,Notes
+APP-1000,"£10,234","$36,338",5.4,0.539,40.5%,0,4,24.5,1,36 months,17.01%,Mortgage,
+APP-1001,"£3,599","$42,166",,0.132,47.8%,0,8,1.1,0,36 months,10.13%,Rent,
+APP-1002,"£12,491","$31,664",1.8,0.213,6.8%,0,11,5.3,1,60 months,9.83%,Rent,referred by branch
+APP-1003,"£3,078","$23,265",0.5,0.264,28.6%,2,11,15.2,0,60 months,12.27%,Rent,referred by branch
+APP-1004,"£4,250","$28,931",2.4,0.061,20.5%,0,6,6.7,1,36 months,6.82%,Mortgage,online application
+APP-1005,"£16,528",,5.5,0.589,36.3%,0,8,5.5,0,36 months,13.42%,Mortgage,repeat customer
+APP-1006,"£15,120","$37,424",11.6,0.374,30.9%,0,8,7.0,2,36 months,13.43%,Rent,repeat customer
+APP-1007,"£9,046","$70,977",4.7,0.23,32.7%,0,5,16.9,1,36 months,9.3%,Mortgage,
+APP-1008,"£3,547","$28,393",4.4,0.348,24.4%,0,9,5.4,0,60 months,11.11%,Mortgage,repeat customer
+APP-1009,"£7,920","$26,629",10.6,0.339,18.4%,1,10,3.1,4,60 months,16.42%,Rent,online application
+APP-1010,"£6,586","$46,394",4.8,0.37,50.0%,1,6,6.5,0,60 months,15.13%,Mortgage,online application
+APP-1011,"£14,503","$43,410",2.9,0.234,20.7%,0,11,,2,36 months,8.57%,Rent,referred by branch
+APP-1012,,"$38,281",11.6,0.359,71.4%,0,9,4.1,2,36 months,13.65%,Rent,referred by branch
+APP-1013,"£11,273","$22,806",9.8,0.565,6.1%,0,9,10.2,0,60 months,,Own,referred by branch
+APP-1014,"£6,201","$35,788",2.8,0.461,56.9%,0,4,,0,36 months,15.17%,Rent,referred by branch
+APP-1015,"£4,903","$51,413",3.1,0.229,27.8%,0,3,19.2,1,36 months,11.44%,Rent,referred by branch
+APP-1016,"£9,570","$18,544",13.0,0.138,,1,16,,0,60 months,11.54%,,online application
+APP-1017,,"$28,888",,0.528,25.1%,0,8,4.3,1,36 months,,Rent,referred by branch
+APP-1018,"£4,960",,2.5,0.371,57.5%,0,5,22.7,0,,11.04%,Rent,referred by branch
+APP-1019,"£10,613","$19,058",2.8,,33.2%,0,10,16.5,1,60 months,11.34%,Mortgage,repeat customer
+APP-1020,"£4,961","$14,460",6.4,0.065,,0,13,8.4,3,60 months,9.38%,Rent,
+APP-1021,"£19,289","$32,288",1.2,0.309,41.1%,0,13,18.4,1,60 months,10.77%,Rent,repeat customer
+APP-1022,"£18,725","$19,269",2.9,,94.7%,0,16,9.2,0,60 months,13.18%,Own,
+APP-1023,"£18,974","$41,591",8.4,0.16,41.0%,0,9,14.7,1,60 months,11.67%,Own,online application
+APP-1024,"£7,447","$39,276",5.3,0.541,60.9%,0,10,6.1,1,36 months,15.67%,Own,repeat customer
+APP-1025,"£13,477","$33,075",7.0,0.444,36.0%,0,6,12.4,0,36 months,10.6%,,online application
+APP-1026,"£9,143","$10,318",4.5,0.164,12.3%,2,10,23.5,1,,,Mortgage,referred by branch
+APP-1027,"£7,838","$27,741",1.6,0.647,10.0%,0,,10.1,0,60 months,12.04%,Mortgage,online application
+APP-1028,"£8,075","$35,445",3.3,0.141,41.0%,,16,5.1,0,36 months,9.98%,Rent,
+APP-1029,"£4,538","$38,432",4.9,0.488,30.2%,2,8,1.7,1,36 months,,Own,online application
+APP-1030,"£4,162","$16,898",3.3,0.23,73.0%,0,14,2.5,0,36 months,11.8%,Rent,online application
+APP-1031,"£15,940","$28,599",3.9,0.452,21.6%,0,,6.1,1,36 months,11.13%,Mortgage,
+APP-1032,"£8,824","$22,264",5.1,0.292,21.8%,0,7,9.4,3,60 months,13.4%,Rent,referred by branch
+APP-1033,"£11,269","$24,236",8.1,0.339,4.3%,1,17,15.2,,60 months,10.43%,Rent,
+APP-1034,"£18,052",,3.1,0.19,17.4%,0,5,13.2,,36 months,10.54%,Rent,
+APP-1035,"£3,499","$24,251",9.7,0.229,25.2%,0,,7.2,0,36 months,8.12%,Own,repeat customer
+APP-1036,"£6,183","$35,730",4.5,0.708,29.4%,0,12,11.7,0,36 months,13.21%,Rent,
+APP-1037,"£10,995","$56,511",8.7,0.811,29.6%,,11,10.1,0,36 months,16.52%,Own,
+APP-1038,"£12,522","$27,125",9.5,0.708,46.5%,,5,12.0,1,36 months,15.66%,Rent,online application
+APP-1039,"£7,893","$34,343",13.5,0.548,35.2%,0,,7.7,1,36 months,11.95%,Rent,repeat customer
+APP-1040,"£18,352","$38,378",9.1,0.444,30.9%,1,8,,0,36 months,12.56%,Rent,repeat customer
+APP-1041,"£11,229","$37,492",9.2,0.331,33.1%,0,5,7.1,0,60 months,12.77%,,referred by branch
+APP-1042,"£4,779","$19,682",13.2,0.22,23.8%,0,7,1.0,0,36 months,9.7%,Rent,referred by branch
+APP-1043,,"$37,725",0.9,,63.1%,0,10,15.8,0,,16.55%,,online application
+APP-1044,"£16,047",,2.0,0.371,51.9%,0,7,38.2,2,36 months,13.86%,Rent,repeat customer
+APP-1045,"£13,073","$16,755",9.0,,77.8%,0,11,23.1,4,36 months,17.29%,Own,referred by branch
+APP-1046,"£3,167","$55,809",0.5,0.519,67.9%,0,7,17.8,1,60 months,13.46%,Mortgage,
+APP-1047,"£22,217","$38,549",5.2,0.16,18.9%,1,10,13.2,2,36 months,10.51%,Rent,online application
+APP-1048,"£14,169","$26,351",5.2,0.461,22.9%,0,12,16.9,3,60 months,16.08%,Mortgage,repeat customer
+APP-1049,"£22,159","$98,736",1.1,0.301,71.6%,0,6,9.0,,60 months,13.49%,Rent,referred by branch
+APP-1050,"£7,862","$53,164",2.1,0.41,19.6%,,9,4.9,0,60 months,11.96%,Rent,online application
+APP-1051,"£8,288","$19,937",7.2,,,0,13,11.8,5,36 months,18.82%,Rent,repeat customer
+APP-1052,"£5,035","$37,694",6.7,0.882,50.5%,0,13,20.2,1,36 months,17.75%,Mortgage,
+APP-1053,"£45,350","$48,453",2.9,0.846,3.9%,0,11,,,36 months,,Mortgage,online application
+APP-1054,"£8,908","$33,044",2.3,0.554,22.1%,0,16,6.4,2,60 months,14.09%,Rent,
+APP-1055,"£25,656","$51,096",2.5,0.619,11.0%,0,6,11.2,2,36 months,14.83%,Rent,repeat customer
+APP-1056,"£6,712","$35,128",6.4,0.244,31.0%,0,5,18.3,1,36 months,11.55%,Own,online application
+APP-1057,"£10,919","$50,697",1.3,,40.1%,0,11,18.5,,60 months,18.98%,Rent,
+APP-1058,"£3,631","$74,553",4.7,0.283,25.6%,1,10,17.3,1,36 months,,Rent,online application
+APP-1059,"£7,866","$25,904",1.2,0.029,47.2%,0,7,7.7,0,36 months,7.94%,Rent,repeat customer
+APP-1060,"£17,859","$40,198",8.5,1.073,38.0%,1,16,14.9,,36 months,18.74%,Rent,
+APP-1061,"£4,670","$28,806",5.3,0.141,56.2%,0,,31.4,1,36 months,10.03%,Rent,repeat customer
+APP-1062,"£18,832","$38,702",10.9,0.402,24.1%,0,,12.4,0,36 months,12.57%,Mortgage,online application
+APP-1063,"£12,117","$20,058",0.4,0.37,93.0%,0,4,13.4,2,60 months,13.36%,Rent,
+APP-1064,"£5,290","$27,183",0.6,0.041,6.8%,0,7,23.4,2,60 months,8.05%,Rent,repeat customer
+APP-1065,"£7,325","$32,922",2.8,0.763,6.4%,1,12,6.1,1,36 months,18.84%,Mortgage,repeat customer
+APP-1066,"£7,514","$56,919",12.1,0.395,,0,5,22.3,1,60 months,11.14%,Rent,
+APP-1067,"£9,607","$64,383",1.7,0.423,43.9%,0,11,9.2,0,60 months,10.73%,Rent,
+APP-1068,"£7,175","$18,737",10.8,0.862,,1,6,8.3,1,60 months,18.89%,Mortgage,repeat customer
+APP-1069,"£6,025","$24,408",5.2,,34.5%,0,12,7.9,1,60 months,15.78%,Rent,repeat customer
+APP-1070,"£8,244","$50,184",5.2,0.261,61.5%,1,11,17.4,3,36 months,15.4%,,referred by branch
+APP-1071,"£5,345","$13,410",7.5,0.238,100.1%,1,5,7.4,0,36 months,,Rent,referred by branch
+APP-1072,"£4,566","$28,808",2.0,0.183,26.4%,1,8,16.2,0,60 months,,Rent,referred by branch
+APP-1073,"£9,615","$34,591",2.8,0.55,13.1%,0,8,10.8,1,36 months,11.98%,Rent,repeat customer
+APP-1074,"£16,810","$68,085",1.5,0.34,12.5%,0,16,10.1,,36 months,15.34%,Rent,
+APP-1075,"£3,954","$51,262",5.0,0.372,68.8%,0,7,,0,36 months,13.59%,Mortgage,repeat customer
+APP-1076,"£9,918","$30,835",15.1,0.464,47.8%,1,15,10.6,1,36 months,14.23%,Rent,online application
+APP-1077,"£6,701","$30,203",3.4,0.361,66.2%,0,,14.5,1,36 months,,Rent,repeat customer
+APP-1078,"£5,507","$32,045",6.6,0.245,25.2%,0,7,11.6,2,36 months,11.89%,Mortgage,referred by branch
+APP-1079,"£16,516","$77,790",6.0,0.466,52.6%,0,13,,2,36 months,15.56%,Mortgage,repeat customer
+APP-1080,"£7,252","$29,319",5.3,0.35,43.1%,0,16,4.2,,60 months,14.49%,Rent,
+APP-1081,"£24,318","$31,200",4.0,0.708,90.0%,3,7,14.4,1,,22.39%,Mortgage,referred by branch
+APP-1082,"£6,199","$43,317",11.2,0.518,18.5%,0,14,14.0,0,36 months,9.63%,Own,referred by branch
+APP-1083,,"$34,187",5.0,0.689,36.0%,0,,4.7,1,60 months,15.96%,Rent,online application
+APP-1084,"£8,635","$32,904",3.1,0.339,31.4%,0,10,12.4,1,60 months,,Rent,referred by branch
+APP-1085,,"$20,805",9.7,0.492,67.2%,0,16,13.1,3,60 months,16.43%,Mortgage,online application
+APP-1086,"£14,081","$36,107",8.1,0.942,14.3%,,7,,0,36 months,14.31%,Rent,repeat customer
+APP-1087,"£9,018","$29,092",5.9,0.615,38.0%,0,10,,1,36 months,13.75%,Rent,repeat customer
+APP-1088,"£14,213","$65,060",4.3,0.221,97.2%,0,11,,1,60 months,13.53%,Rent,
+APP-1089,"£9,620","$50,339",13.4,0.106,38.0%,0,8,12.6,0,60 months,9.18%,Mortgage,
+APP-1090,"£5,159","$35,880",4.8,0.054,5.9%,0,13,2.0,2,36 months,6.26%,Own,repeat customer
+APP-1091,"£9,309","$50,726",2.9,,23.9%,0,,6.1,0,36 months,10.06%,Own,referred by branch
+APP-1092,"£10,211","$30,640",7.2,0.087,43.9%,,5,7.5,1,36 months,10.41%,Mortgage,repeat customer
+APP-1093,"£17,590","$61,455",3.8,0.48,66.4%,2,12,9.0,2,36 months,16.63%,Rent,referred by branch
+APP-1094,"£5,746","$36,218",,0.258,49.1%,,9,7.8,2,60 months,11.93%,Own,referred by branch
+APP-1095,"£9,666","$48,615",3.6,,20.0%,0,5,,1,36 months,8.82%,Mortgage,referred by branch
+APP-1096,"£3,522","$19,045",4.2,0.078,,1,10,12.6,1,60 months,12.04%,Own,repeat customer
+APP-1097,"£14,631","$43,189",1.0,0.526,72.4%,0,2,14.0,2,60 months,,Mortgage,repeat customer
+APP-1098,"£5,172","$15,614",,0.446,60.7%,0,8,18.6,1,36 months,13.94%,Mortgage,referred by branch
+APP-1099,,"$13,126",2.6,0.545,51.6%,0,9,4.8,1,36 months,,Mortgage,
+APP-1100,"£9,552","$31,187",3.9,0.534,60.1%,0,9,10.0,2,36 months,15.37%,Rent,referred by branch
+APP-1101,"£19,214","$23,157",5.8,0.326,40.4%,,14,15.3,0,36 months,12.63%,Rent,referred by branch
+APP-1102,,"$39,420",2.1,0.509,6.6%,0,4,18.0,1,36 months,10.83%,Rent,repeat customer
+APP-1103,"£5,152","$111,567",17.6,0.484,3.3%,0,9,17.7,,36 months,12.36%,Own,referred by branch
+APP-1104,"£6,336",,4.3,0.357,8.0%,0,8,3.3,0,60 months,8.42%,Own,repeat customer
+APP-1105,"£5,026","$26,583",6.3,0.512,58.9%,0,16,3.9,1,60 months,17.85%,Mortgage,repeat customer
+APP-1106,"£12,427","$40,243",1.8,0.133,,0,12,10.0,1,36 months,15.14%,Rent,referred by branch
+APP-1107,"£6,097","$46,467",2.2,0.373,67.0%,0,6,,1,36 months,,Rent,repeat customer
+APP-1108,"£6,419","$33,250",13.5,0.449,67.6%,,4,1.2,2,60 months,,Rent,referred by branch
+APP-1109,"£14,044","$32,762",7.5,0.538,63.7%,0,6,33.8,3,36 months,15.42%,Rent,
+APP-1110,"£6,290","$51,598",4.3,0.71,19.9%,0,13,10.5,0,36 months,15.2%,Rent,referred by branch
+APP-1111,"£12,832","$47,096",1.4,0.299,45.5%,0,11,27.6,0,36 months,11.12%,Rent,
+APP-1112,"£5,526","$21,659",13.2,0.816,50.2%,1,7,11.2,2,60 months,18.76%,Mortgage,
+APP-1113,"£4,782","$34,906",2.2,0.395,6.9%,,8,14.8,0,36 months,10.47%,Mortgage,online application
+APP-1114,"£3,290","$36,962",3.3,0.559,61.5%,0,8,15.6,1,36 months,13.65%,Rent,repeat customer
+APP-1115,"£30,234","$21,435",4.2,0.243,57.8%,1,12,11.0,2,36 months,15.61%,Rent,referred by branch
+APP-1116,"£8,167",,6.2,0.266,40.4%,1,9,6.9,4,60 months,15.24%,Rent,repeat customer
+APP-1117,"£11,457","$23,648",4.8,0.26,52.2%,0,14,9.8,1,36 months,13.0%,Mortgage,online application
+APP-1118,"£9,714","$59,044",4.7,0.344,18.6%,0,7,,1,36 months,10.01%,Mortgage,
+APP-1119,"£10,894","$39,990",16.3,0.32,16.1%,0,8,3.9,1,36 months,11.41%,Rent,online application

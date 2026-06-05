@@ -1,0 +1,10 @@
+{
+  "auc": 0.7948,
+  "gini": 0.5897,
+  "ks": 0.4446,
+  "brier": 0.1865,
+  "default_rate": 0.2152,
+  "n": 4999,
+  "brier_calibrated": 0.1334,
+  "brier_uncalibrated": 0.1865
+}

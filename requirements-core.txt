@@ -1,0 +1,4 @@
+# Minimal deps to run the engine end-to-end WITHOUT xgboost/shap/fastapi/streamlit
+# (uses the built-in logistic baseline + template memo). Useful for CI / constrained envs.
+numpy>=1.24
+pandas>=2.0
