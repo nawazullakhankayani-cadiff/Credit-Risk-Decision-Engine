@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4173", "--directory", "site"],
+      "port": 4173
+    },
+    {
+      "name": "creditrisk",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "credit-card-risk-ai", "run", "dev"],
+      "port": 5174
+    }
+  ]
+}

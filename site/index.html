@@ -368,9 +368,1177 @@
   .compare ul{margin:0; padding-left:18px; color:var(--muted); font-size:13.5px; line-height:1.75}
   .compare.on{border-color:color-mix(in srgb,var(--accent) 45%,var(--line)); box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 22%,transparent), var(--shadow)}
   @media(max-width:760px){ .ov-grid3,.ov-grid2{grid-template-columns:1fr} }
+
+  /* ============================================================= */
+  /* =========  COSMOQ — liquid glass · cosmic · animated  ======= */
+  /* ============================================================= */
+  html[data-theme="dark"]{
+    --bg:#06070d; --panel:#0d1018; --panel2:#141925; --line:#222a3b;
+    --accent:#6f8dff; --accent2:#a06bff; --cyan:#46e0d8;
+    --glass:rgba(20,26,40,.55); --glass-line:rgba(255,255,255,.08);
+    --glow1:rgba(120,110,255,.30); --glow2:rgba(70,150,255,.26); --glow3:rgba(70,224,216,.16);
+  }
+  html[data-theme="light"]{
+    --cyan:#1fb6c9;
+    --glass:rgba(255,255,255,.62); --glass-line:rgba(20,30,60,.08);
+    --glow1:rgba(120,110,255,.16); --glow2:rgba(70,150,255,.14); --glow3:rgba(70,224,216,.10);
+  }
+  :root{--cyan:#46e0d8}  /* always defined so gradient text never goes transparent */
+  /* base cosmic wash (stronger than the old one) */
+  html[data-theme="dark"] body::before{
+    background:radial-gradient(1100px 640px at 84% -10%, var(--glow1), transparent 60%),
+               radial-gradient(900px 600px at 6% -8%, var(--glow2), transparent 58%),
+               radial-gradient(800px 700px at 50% 118%, var(--glow3), transparent 62%)}
+
+  /* ---- animated floating orbs (added to <body> as fixed layer) ---- */
+  .fx{position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden}
+  .fx-orb{position:absolute; border-radius:50%; filter:blur(70px); opacity:.55; will-change:transform}
+  .fx-orb.o1{width:520px; height:520px; top:-160px; left:-120px;
+    background:radial-gradient(circle at 30% 30%, #6a5bff, transparent 70%); animation:float1 22s ease-in-out infinite}
+  .fx-orb.o2{width:560px; height:560px; top:-120px; right:-160px;
+    background:radial-gradient(circle at 70% 30%, #3f7bff, transparent 70%); animation:float2 26s ease-in-out infinite}
+  .fx-orb.o3{width:480px; height:480px; bottom:-200px; left:38%;
+    background:radial-gradient(circle at 50% 50%, #46e0d8, transparent 70%); opacity:.32; animation:float3 30s ease-in-out infinite}
+  html[data-theme="light"] .fx-orb{opacity:.22}
+  @keyframes float1{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,40px) scale(1.12)}}
+  @keyframes float2{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-50px,60px) scale(1.08)}}
+  @keyframes float3{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,-50px) scale(1.15)}}
+  /* fine grain over everything for that premium film texture */
+  .fx-grain{position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  /* ---- animated gradient wordmarks ---- */
+  .brand, .s-brand, .auth-brand{
+    background:linear-gradient(100deg,var(--accent),var(--accent2),var(--cyan),var(--accent));
+    background-size:280% 100%; -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent; color:transparent; animation:shimmer 8s linear infinite}
+  h1 span{background:linear-gradient(100deg,var(--accent),var(--accent2),var(--cyan),var(--accent));
+    background-size:280% 100%; -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent; animation:shimmer 8s linear infinite}
+  @keyframes shimmer{to{background-position:280% 0}}
+
+  /* ---- liquid glass panels ---- */
+  .card,.feat,.metric,.chartbox,.bmetric,.step,.qcard{
+    background:var(--glass) !important; background-image:var(--card-grad);
+    backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
+    border:1px solid var(--glass-line)}
+  .card,.feat,.chartbox{box-shadow:0 24px 60px -28px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05)}
+  .feat:hover,.metric:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--glass-line))}
+  /* soft glow ring that follows feature cards on hover */
+  .feat::after,.qcard::after{content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px;
+    background:linear-gradient(135deg,var(--accent),transparent 40%,transparent 60%,var(--accent2));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; opacity:0; transition:opacity .25s; pointer-events:none}
+  .feat:hover::after,.qcard:hover::after{opacity:.7}
+
+  /* ---- glowing primary button with light sweep ---- */
+  .btn.primary{position:relative; overflow:hidden}
+  .btn.primary::after{content:""; position:absolute; top:0; left:-130%; width:60%; height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent); transform:skewX(-18deg)}
+  .btn.primary:hover::after{animation:sweep .85s ease}
+  @keyframes sweep{to{left:130%}}
+  .btn.block{display:flex; width:100%; justify-content:center}
+
+  /* ---- login: cosmic hero ---- */
+  html[data-theme="dark"] .auth{
+    background:radial-gradient(1000px 560px at 50% -12%, var(--glow1), transparent 60%),
+               radial-gradient(900px 520px at 50% 120%, var(--glow2), transparent 60%)}
+  .auth-card{background:var(--glass) !important; backdrop-filter:blur(26px) saturate(170%);
+    -webkit-backdrop-filter:blur(26px) saturate(170%); border:1px solid var(--glass-line);
+    box-shadow:0 50px 120px -40px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.06)}
+  .auth-eyebrow{display:inline-flex; align-items:center; gap:7px; font-size:11.5px; font-weight:700;
+    letter-spacing:1.2px; text-transform:uppercase; color:var(--accent);
+    background:color-mix(in srgb,var(--accent) 12%,transparent); border:1px solid var(--glass-line);
+    border-radius:999px; padding:5px 12px; margin-bottom:14px}
+  .auth-eyebrow .pulse{width:7px; height:7px; border-radius:50%; background:var(--cyan);
+    box-shadow:0 0 0 0 rgba(70,224,216,.6); animation:pulse 1.8s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(70,224,216,.55)}70%{box-shadow:0 0 0 9px rgba(70,224,216,0)}100%{box-shadow:0 0 0 0 rgba(70,224,216,0)}}
+  .auth-feats{display:flex; gap:8px; flex-wrap:wrap; margin:16px 0 2px}
+  .auth-feats span{font-size:11.5px; font-weight:600; color:var(--muted);
+    background:color-mix(in srgb,var(--panel2) 70%,transparent); border:1px solid var(--glass-line);
+    border-radius:8px; padding:6px 9px}
+
+  /* ---- sidebar glass + active glow ---- */
+  /* cosmic sidebar — always dark in both themes, with readable text */
+  .sidebar{
+    background:linear-gradient(180deg,rgba(13,16,24,.92),rgba(6,7,13,.96)) !important;
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-right:1px solid var(--glass-line) !important}
+  .sidebar .s-nav .nav-link{color:#9aa6bd}
+  .sidebar .s-nav .nav-link:hover{color:#fff}
+  .sidebar .s-name{color:#eef2fb}
+  .sidebar .s-co{color:#8d9ab0}
+  .sidebar .s-user{background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.10)}
+  .sidebar .btn-logout{color:#eef2fb; background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.12)}
+  .sidebar .btn-logout:hover{background:rgba(255,255,255,.1)}
+  .s-nav .nav-link.active{color:#fff; box-shadow:0 12px 30px -10px rgba(111,141,255,.7); position:relative}
+  .s-nav .nav-link.active::before{content:""; position:absolute; left:-14px; top:8px; bottom:8px; width:3px;
+    border-radius:0 3px 3px 0; background:linear-gradient(180deg,var(--accent),var(--cyan))}
+  html[data-theme="dark"] .topbar{background:rgba(6,7,13,.7); backdrop-filter:blur(16px); border-bottom:1px solid var(--glass-line)}
+
+  /* ---- cosmic footer ---- */
+  .main footer{border-top:1px solid var(--glass-line); padding:0; margin-top:36px; position:relative; overflow:hidden}
+  .foot-cosmic{position:relative; text-align:center; padding:54px 20px 30px}
+  .foot-glow{font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:clamp(34px,7vw,76px);
+    letter-spacing:-2px; line-height:1; margin:0 0 10px;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--text) 92%,transparent),transparent 92%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    text-shadow:0 0 60px rgba(111,141,255,.35)}
+  .foot-cosmic .foot-tag{color:var(--muted); font-size:14px; margin:0 0 18px}
+  .foot-links{display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-bottom:18px}
+  .foot-links a{color:var(--muted); text-decoration:none; font-size:13px; font-weight:600; cursor:pointer; transition:.18s}
+  .foot-links a:hover{color:var(--text)}
+  .foot-copy{color:var(--muted); font-size:12px; opacity:.8}
+  .main footer::after{content:""; position:absolute; left:50%; bottom:-260px; transform:translateX(-50%);
+    width:680px; height:340px; border-radius:50%; pointer-events:none;
+    background:radial-gradient(circle, var(--glow1), transparent 70%); filter:blur(20px)}
+
+  @media (prefers-reduced-motion: reduce){
+    .fx-orb,.brand,.s-brand,.auth-brand,h1 span,.auth-eyebrow .pulse{animation:none !important}
+    .btn.primary:hover::after{animation:none}
+  }
 </style>
 </head>
 <body>
+<div class="fx" aria-hidden="true"><div class="fx-orb o1"></div><div class="fx-orb o2"></div><div class="fx-orb o3"></div></div>
+<div class="fx-grain" aria-hidden="true"></div>
+<div class="lp" id="lp">
+<style>
+.lp{--bg:#08090c;--bg2:#0d0f13;--panel:rgba(255,255,255,.035);--panel2:rgba(255,255,255,.06);--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.14);--text:#f3f5f8;--muted:#9ba3af;--faint:#6b727d;--accent:#19e3d6;--accent2:#8b7bff;--grad:linear-gradient(120deg,#19e3d6,#8b7bff);--green:#3ddc97;--amber:#f5b14c;--red:#ff6b6b;position:relative;z-index:2;background:var(--bg);color:var(--text);min-height:100vh;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.5}
+.lp *{box-sizing:border-box}
+.lp::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(900px 600px at 15% -5%,rgba(25,227,214,.10),transparent 60%),radial-gradient(820px 620px at 88% 8%,rgba(139,123,255,.12),transparent 62%),linear-gradient(180deg,#0a0c10 0%,#08090c 40%,#08090c 100%)}
+.lp::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;background:radial-gradient(1100px 700px at 50% 120%,rgba(139,123,255,.07),transparent 60%),linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:auto,46px 46px,46px 46px;-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 30%,#000,transparent 75%);mask-image:radial-gradient(ellipse 80% 60% at 50% 30%,#000,transparent 75%)}
+.lp-wrap{max-width:1180px;margin:0 auto;padding:0 24px;position:relative}
+.lp-section{padding:110px 0;position:relative}
+.lp-center{text-align:center}
+.lp-h1{font-family:"Space Grotesk","Inter",sans-serif;font-size:clamp(42px,6vw,72px);font-weight:700;letter-spacing:-2px;line-height:1.04;margin:0;color:var(--text)}
+.lp-h2{font-family:"Space Grotesk","Inter",sans-serif;font-size:clamp(30px,4vw,46px);font-weight:700;letter-spacing:-1px;line-height:1.08;margin:0;color:var(--text)}
+.lp-h3{font-family:"Space Grotesk","Inter",sans-serif;font-size:21px;font-weight:600;letter-spacing:-.4px;margin:0;color:var(--text)}
+.lp-lead{color:var(--muted);font-size:19px;max-width:640px;line-height:1.6;margin:0}
+.lp-center .lp-lead{margin-left:auto;margin-right:auto}
+.lp-eyebrow{display:inline-flex;align-items:center;gap:9px;text-transform:uppercase;letter-spacing:1.5px;font-size:12px;font-weight:700;color:var(--accent);font-family:"Space Grotesk","Inter",sans-serif}
+.lp-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px 1px rgba(25,227,214,.8)}
+.lp-grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.lp-divider{height:1px;width:100%;background:linear-gradient(90deg,transparent,var(--line2),transparent);border:0;margin:0}
+.lp-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:12px 20px;font-size:15px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease,filter .18s ease;text-decoration:none;font-family:inherit;line-height:1;white-space:nowrap}
+.lp-btn-primary{background:var(--accent);color:#04201e;box-shadow:0 10px 34px -10px rgba(25,227,214,.55)}
+.lp-btn-primary:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 16px 40px -10px rgba(25,227,214,.65)}
+.lp-btn-ghost{background:transparent;border-color:var(--line2);color:var(--text)}
+.lp-btn-ghost:hover{border-color:var(--accent);color:#fff;transform:translateY(-2px);background:rgba(25,227,214,.05)}
+.lp-btn-lg{padding:15px 26px;font-size:16px;border-radius:11px}
+.lp-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:24px;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.lp-card:hover{transform:translateY(-3px);border-color:rgba(25,227,214,.4);box-shadow:0 18px 50px -24px rgba(25,227,214,.35)}
+.lp-card-glow{position:relative;overflow:hidden}
+.lp-card-glow::before{content:"";position:absolute;top:-40%;right:-30%;width:60%;height:120%;background:radial-gradient(circle,rgba(139,123,255,.16),transparent 70%);pointer-events:none}
+.lp-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.lp-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.lp-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.lp-bento{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(160px,auto);gap:18px}
+.lp-frame{border:1px solid var(--line2);border-radius:14px;background:#0b0d12;overflow:hidden;box-shadow:0 50px 120px -40px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.02),0 20px 60px -30px rgba(139,123,255,.25)}
+.lp-frame-bar{height:38px;display:flex;align-items:center;gap:8px;padding:0 14px;background:linear-gradient(180deg,#121521,#0d0f16);border-bottom:1px solid var(--line)}
+.lp-frame-dot{width:11px;height:11px;border-radius:50%;background:#2a2f3a}
+.lp-frame-dot.r{background:#ff5f57}.lp-frame-dot.y{background:#febc2e}.lp-frame-dot.g{background:#28c840}
+.lp-frame-url{margin:0 auto;display:inline-flex;align-items:center;gap:7px;height:24px;padding:0 14px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--muted);font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;max-width:60%}
+.lp-frame-url svg{width:11px;height:11px;flex:none;color:var(--accent)}
+.lp-frame-body{padding:0}
+.lp-kpi{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px 16px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s ease}
+.lp-kpi:hover{border-color:rgba(25,227,214,.35)}
+.lp-kpi .l{font-size:11px;font-weight:600;letter-spacing:.4px;color:var(--faint);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.lp-kpi .v{font-family:"Space Grotesk","Inter",sans-serif;font-size:25px;font-weight:700;letter-spacing:-.8px;color:var(--text);line-height:1}
+.lp-kpi .d{font-size:12px;font-weight:600;color:var(--green);display:inline-flex;align-items:center;gap:4px}
+.lp-kpi .d.neg{color:var(--amber)}
+.lp-badge{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.2px;color:var(--accent);background:rgba(25,227,214,.10);border:1px solid rgba(25,227,214,.28)}
+.lp-badge svg{width:11px;height:11px}
+.lp-grade{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;font-family:"Space Grotesk","Inter",sans-serif;font-weight:700;font-size:16px;letter-spacing:-.5px;color:#04201e;background:linear-gradient(135deg,#19e3d6,#4fe0c4);box-shadow:0 6px 18px -8px rgba(25,227,214,.6)}
+.lp-grade.b{background:linear-gradient(135deg,#5fe3cf,#8b7bff)}
+.lp-grade.c{background:linear-gradient(135deg,#f5b14c,#f59e4c);color:#2a1a04}
+.lp-grade.d,.lp-grade.f{background:linear-gradient(135deg,#ff8a8a,#ff6b6b);color:#2a0808}
+.lp-decision{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.4px}
+.lp-decision::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 8px 1px currentColor}
+.lp-decision.approve{color:var(--green);background:rgba(61,220,151,.10);border:1px solid rgba(61,220,151,.3)}
+.lp-decision.refer{color:var(--amber);background:rgba(245,177,76,.10);border:1px solid rgba(245,177,76,.3)}
+.lp-decision.decline{color:var(--red);background:rgba(255,107,107,.10);border:1px solid rgba(255,107,107,.3)}
+.lp-rcbar{display:grid;grid-template-columns:1fr 92px;align-items:center;gap:12px;padding:7px 0}
+.lp-rcbar .rc-l{font-size:12.5px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lp-rcbar .rc-l b{color:var(--text);font-weight:600}
+.lp-rcbar .rc-t{justify-self:start;width:100%;height:7px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden;position:relative}
+.lp-rcbar .rc-f{position:absolute;inset:0 auto 0 0;height:100%;border-radius:4px}
+.lp-rcbar.pos .rc-f{background:linear-gradient(90deg,rgba(255,107,107,.55),#ff6b6b)}
+.lp-rcbar.neg .rc-f{background:linear-gradient(90deg,rgba(61,220,151,.5),#3ddc97)}
+.lp-rcbar.pos .rc-l b{color:#ffb0b0}
+.lp-rcbar.neg .rc-l b{color:#8feac0}
+.lp-spark{display:block;width:100%}
+.lp-msidebar{display:flex;flex-direction:column;gap:3px;padding:16px 12px;border-right:1px solid var(--line);background:rgba(255,255,255,.012);min-height:100%}
+.lp-msidebar .mnav{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:12.5px;color:var(--muted);font-weight:500}
+.lp-msidebar .mnav svg{width:14px;height:14px;flex:none;opacity:.8}
+.lp-msidebar .mnav.on{color:var(--text);background:rgba(25,227,214,.10);border:1px solid rgba(25,227,214,.22)}
+.lp-msidebar .mnav.on svg{color:var(--accent);opacity:1}
+.lp-mlogo{display:flex;align-items:center;gap:8px;padding:4px 10px 16px;font-family:"Space Grotesk","Inter",sans-serif;font-weight:700;font-size:14px;letter-spacing:-.4px}
+.lp-mlogo .mk{width:20px;height:20px;border-radius:6px;background:var(--grad);box-shadow:0 0 14px -2px rgba(25,227,214,.6)}
+.lp-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.lp-table th{text-align:left;color:var(--faint);font-weight:600;text-transform:uppercase;letter-spacing:.4px;font-size:10.5px;padding:8px 10px;border-bottom:1px solid var(--line)}
+.lp-table td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--muted)}
+.lp-table tr:last-child td{border-bottom:0}
+.lp-nav{position:sticky;top:0;z-index:20;height:64px;display:flex;align-items:center;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(8,9,12,.72);border-bottom:1px solid var(--line)}
+.lp-nav-inner{max-width:1180px;margin:0 auto;padding:0 24px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.lp-logo{display:flex;align-items:center;gap:10px;font-family:"Space Grotesk","Inter",sans-serif;font-weight:700;font-size:17px;letter-spacing:-.5px;color:var(--text);text-decoration:none}
+.lp-logo .mk{width:26px;height:26px;border-radius:8px;background:var(--grad);box-shadow:0 0 18px -3px rgba(25,227,214,.7);position:relative}
+.lp-logo .mk::after{content:"";position:absolute;inset:7px;border-radius:3px;background:#08090c;opacity:.55}
+.lp-nav-links{display:flex;align-items:center;gap:28px}
+.lp-nav-links a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:color .15s ease}
+.lp-nav-links a:hover{color:var(--text)}
+.lp-nav-cta{display:flex;align-items:center;gap:12px}
+.lp-logos{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;align-items:center}
+.lp-logos .wm{display:flex;align-items:center;justify-content:center;gap:8px;font-family:"Space Grotesk","Inter",sans-serif;font-weight:700;font-size:16px;letter-spacing:-.3px;color:var(--faint);opacity:.7;transition:opacity .2s ease,color .2s ease}
+.lp-logos .wm:hover{opacity:1;color:var(--muted)}
+.lp-faq{display:flex;flex-direction:column;gap:0}
+.lp-faq details{border-bottom:1px solid var(--line)}
+.lp-faq summary{list-style:none;cursor:pointer;padding:22px 4px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-family:"Space Grotesk","Inter",sans-serif;font-weight:600;font-size:17px;color:var(--text)}
+.lp-faq summary::-webkit-details-marker{display:none}
+.lp-faq summary .chev{width:18px;height:18px;flex:none;color:var(--muted);transition:transform .25s ease}
+.lp-faq details[open] summary .chev{transform:rotate(180deg);color:var(--accent)}
+.lp-faq .ans{padding:0 4px 22px;color:var(--muted);font-size:15px;line-height:1.65;max-width:760px}
+.lp-footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative}
+.lp-footer-top{margin-bottom:48px}
+.lp-footer-cols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px}
+.lp-footer-col h4{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--faint);margin:0 0 16px;font-weight:700}
+.lp-footer-col a{display:block;color:var(--muted);text-decoration:none;font-size:14px;padding:6px 0;transition:color .15s ease}
+.lp-footer-col a:hover{color:var(--text)}
+.lp-footer-bottom{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;color:var(--faint);font-size:13px;flex-wrap:wrap}
+.lp-footer-social{display:flex;gap:14px}
+.lp-footer-social a{color:var(--faint);transition:color .15s ease}
+.lp-footer-social a:hover{color:var(--accent)}
+.lp-footer-social svg{width:18px;height:18px}
+.lp-marquee{overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.lp-marquee-track{display:inline-flex;gap:14px;white-space:nowrap;animation:lp-scroll 28s linear infinite;will-change:transform}
+.lp-marquee:hover .lp-marquee-track{animation-play-state:paused}
+.lp-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--muted);font-size:14px;white-space:nowrap}
+.lp-chip svg{width:13px;height:13px;color:var(--accent);flex:none}
+@keyframes lp-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes lp-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes lp-pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes lp-draw{from{stroke-dashoffset:600}to{stroke-dashoffset:0}}
+@keyframes lp-rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.lp-hero{padding-top:72px;padding-bottom:90px;text-align:center}
+.lp-hero-inner{display:flex;flex-direction:column;align-items:center;gap:22px;animation:lp-rise .7s ease both}
+.lp-hero-cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.lp-trust{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;color:var(--faint);font-size:13px;font-weight:500}
+.lp-trust .dot{width:3px;height:3px;border-radius:50%;background:var(--faint)}
+.lp-trust b{color:var(--muted);font-weight:600}
+.lp-hero-frame{margin-top:54px;animation:lp-rise .9s ease both;animation-delay:.12s;position:relative}
+.lp-hero-frame::before{content:"";position:absolute;left:50%;top:30px;transform:translateX(-50%);width:78%;height:80%;background:radial-gradient(ellipse at center,rgba(25,227,214,.16),transparent 70%);filter:blur(40px);z-index:-1;pointer-events:none}
+@media (max-width:980px){.lp-grid-4{grid-template-columns:repeat(2,1fr)}.lp-bento{grid-template-columns:1fr 1fr}.lp-footer-cols{grid-template-columns:1fr 1fr}.lp-logos{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:860px){.lp-nav-links{display:none}.lp-section{padding:78px 0}.lp-grid-2,.lp-grid-3{grid-template-columns:1fr}.lp-h1{letter-spacing:-1px}}
+@media (max-width:680px){.lp-grid-4,.lp-bento,.lp-footer-cols,.lp-logos{grid-template-columns:1fr}.lp-footer-cols{grid-template-columns:1fr 1fr}.lp-wrap{padding:0 18px}.lp-msidebar{display:none}}
+@media (max-width:560px){.lp-nav-inner{gap:10px;padding:0 14px}.lp-logo{font-size:14px;white-space:nowrap;gap:7px}.lp-logo .mk{width:22px;height:22px}.lp-nav-cta{gap:8px}.lp-nav-cta .lp-btn-ghost{display:none}.lp-nav-cta .lp-btn-primary{padding:9px 14px;font-size:13px}.lp-nav-cta .lp-btn-primary svg{display:none}}
+@media (prefers-reduced-motion:reduce){.lp *,.lp *::before,.lp *::after{animation:none!important;transition:none!important}}
+</style>
+<header class="lp-nav">
+<div class="lp-nav-inner">
+<a class="lp-logo" data-go="login" aria-label="Credit Risk Engine home"><span class="mk"></span>Credit Risk Engine</a>
+<nav class="lp-nav-links">
+<a data-go="login">Product</a>
+<a data-go="login">Features</a>
+<a data-go="login">How it works</a>
+<a data-go="login">Governance</a>
+<a data-go="login">Docs</a>
+</nav>
+<div class="lp-nav-cta">
+<a class="lp-btn lp-btn-ghost" data-go="login">Log in</a>
+<button class="lp-btn lp-btn-primary" data-go="login">Launch app
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</div>
+</div>
+</header>
+<section class="lp-section lp-hero">
+<style>
+.lp-hero .lph-grid{display:grid;grid-template-columns:184px 1fr;min-height:430px}
+.lp-hero .lph-main{padding:18px 20px 22px}
+.lp-hero .lph-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.lp-hero .lph-title{font-family:"Space Grotesk","Inter",sans-serif;font-weight:700;font-size:15px;letter-spacing:-.4px;color:var(--text);display:flex;align-items:center;gap:9px}
+.lp-hero .lph-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.lp-hero .lph-low{display:grid;grid-template-columns:1.05fr 1fr;gap:14px}
+.lp-hero .lph-dhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.lp-hero .lph-app{display:flex;flex-direction:column;gap:2px}
+.lp-hero .lph-app .nm{font-size:13.5px;color:var(--text);font-weight:600}
+.lp-hero .lph-app .sub{font-size:11.5px;color:var(--faint)}
+.lp-hero .lph-pdrow{display:flex;align-items:center;gap:14px;padding:11px 0 14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:12px}
+.lp-hero .lph-pd{display:flex;flex-direction:column;gap:3px}
+.lp-hero .lph-pd .v{font-family:"Space Grotesk","Inter",sans-serif;font-weight:700;font-size:20px;letter-spacing:-.6px;color:var(--text);line-height:1}
+.lp-hero .lph-pd .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--faint);font-weight:600}
+.lp-hero .lph-chead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.lp-hero .lph-chead .t{font-size:12.5px;color:var(--text);font-weight:600}
+.lp-hero .lph-chead .n{font-size:11px;color:var(--faint)}
+.lp-hero .lph-stat{display:flex;align-items:baseline;gap:7px;margin-bottom:10px}
+.lp-hero .lph-stat .b{font-family:"Space Grotesk","Inter",sans-serif;font-weight:700;font-size:24px;letter-spacing:-.8px;color:var(--text);line-height:1}
+.lp-hero .lph-flag{position:absolute;z-index:3;display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border-radius:11px;background:rgba(13,15,19,.92);border:1px solid var(--line2);backdrop-filter:blur(10px);box-shadow:0 16px 40px -16px rgba(0,0,0,.8);font-size:12px;color:var(--text);font-weight:600;animation:lp-float 5s ease-in-out infinite}
+.lp-hero .lph-flag svg{width:14px;height:14px;color:var(--accent)}
+.lp-hero .lph-flag.a{top:96px;right:-14px}
+.lp-hero .lph-flag.b{bottom:54px;left:-18px;animation-delay:1.4s}
+@media (max-width:760px){.lp-hero .lph-grid{grid-template-columns:1fr}.lp-hero .lph-kpis{grid-template-columns:repeat(2,1fr)}.lp-hero .lph-low{grid-template-columns:1fr}.lp-hero .lph-flag{display:none}}
+</style>
+<div class="lp-wrap lp-hero-inner">
+<span class="lp-eyebrow">AI-Native Credit Decisioning</span>
+<h1 class="lp-h1">Score any borrower.<br><span class="lp-grad">Justify every decision.</span></h1>
+<p class="lp-lead">Estimate probability of default, assign an A&ndash;F risk grade, and export an audit-ready credit memo in seconds &mdash; straight from any messy CSV. Calibrated PD, reason codes, and a written rationale on every applicant.</p>
+<div class="lp-hero-cta">
+<button class="lp-btn lp-btn-primary lp-btn-lg" data-go="login">Launch the app
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<a class="lp-btn lp-btn-ghost lp-btn-lg" data-go="login">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Watch live demo</a>
+</div>
+<div class="lp-trust"><b>No setup</b><span class="dot"></span>runs in your browser<span class="dot"></span><b>0.795 AUC</b><span class="dot"></span>calibrated PD</div>
+</div>
+
+<div class="lp-wrap lp-hero-frame">
+<div class="lp-frame">
+<div class="lp-frame-bar">
+<span class="lp-frame-dot r"></span><span class="lp-frame-dot y"></span><span class="lp-frame-dot g"></span>
+<span class="lp-frame-url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>app.creditrisk.engine/overview</span>
+</div>
+<div class="lp-frame-body">
+<div class="lph-grid">
+
+<aside class="lp-msidebar">
+<div class="lp-mlogo"><span class="mk"></span>RiskEngine</div>
+<div class="mnav on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</div>
+<div class="mnav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Applications</div>
+<div class="mnav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>Model health</div>
+<div class="mnav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Decision queue</div>
+<div class="mnav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Credit memos</div>
+<div class="mnav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 00-1.7-1L16.5 3h-4l-.3 2.6a7 7 0 00-1.7 1l-2.4-1-2 3.4L6 11a7 7 0 000 2l-2 1.6 2 3.4 2.4-1a7 7 0 001.7 1l.3 2.6h4l.3-2.6a7 7 0 001.7-1l2.4 1 2-3.4-2-1.6c.1-.3.1-.7.1-1z"/></svg>Settings</div>
+</aside>
+
+<div class="lph-main">
+<div class="lph-top">
+<div class="lph-title">Portfolio overview <span class="lp-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>Calibrated</span></div>
+<span class="lp-chip" style="padding:6px 12px;font-size:12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>~6ms / score</span>
+</div>
+
+<div class="lph-kpis">
+<div class="lp-kpi"><span class="l">Approval rate</span><span class="v">61.4%</span><span class="d"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 15l6-6 6 6"/></svg>+2.1%</span></div>
+<div class="lp-kpi"><span class="l">Avg PD</span><span class="v">7.2%</span><span class="d neg"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>-0.4%</span></div>
+<div class="lp-kpi"><span class="l">Model AUC</span><span class="v">0.795</span><span class="d">Gini 0.590</span></div>
+<div class="lp-kpi"><span class="l">Decisions today</span><span class="v">1,284</span><span class="d">KS 0.445</span></div>
+</div>
+
+<div class="lph-low">
+<div class="lp-card" style="padding:16px">
+<div class="lph-dhead">
+<div class="lph-app"><span class="nm">Latest decision &middot; #A-90418</span><span class="sub">Maya R. &middot; $24,000 &middot; 48mo</span></div>
+<span class="lp-decision approve">Approve</span>
+</div>
+<div class="lph-pdrow">
+<span class="lp-grade b">B</span>
+<div class="lph-pd"><span class="v">4.2%</span><span class="k">Probability of default</span></div>
+<div class="lph-pd" style="margin-left:auto;text-align:right"><span class="v" style="color:var(--green)">A&minus;</span><span class="k">Confidence</span></div>
+</div>
+<div class="lp-rcbar neg"><div class="rc-l">Long credit history <b>&minus;1.8%</b></div><div class="rc-t"><span class="rc-f" style="width:72%"></span></div></div>
+<div class="lp-rcbar neg"><div class="rc-l">Low utilization (18%) <b>&minus;1.1%</b></div><div class="rc-t"><span class="rc-f" style="width:48%"></span></div></div>
+<div class="lp-rcbar pos"><div class="rc-l">Recent inquiries (3) <b>+0.9%</b></div><div class="rc-t"><span class="rc-f" style="width:40%"></span></div></div>
+</div>
+
+<div class="lp-card" style="padding:16px">
+<div class="lph-chead"><span class="t">Approvals over time</span><span class="n">30d</span></div>
+<div class="lph-stat"><span class="b">18,402</span><span class="lp-kpi" style="padding:0;border:0;background:none;flex:none"><span class="d"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 15l6-6 6 6"/></svg>+12.6%</span></span></div>
+<svg class="lp-spark" viewBox="0 0 320 110" preserveAspectRatio="none" aria-hidden="true">
+<defs>
+<linearGradient id="lphArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#19e3d6" stop-opacity="0.32"/><stop offset="1" stop-color="#19e3d6" stop-opacity="0"/></linearGradient>
+<linearGradient id="lphLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#19e3d6"/><stop offset="1" stop-color="#8b7bff"/></linearGradient>
+</defs>
+<path d="M0,82 L26,76 L52,80 L78,64 L104,68 L130,52 L156,58 L182,42 L208,46 L234,30 L260,36 L286,22 L320,16 L320,110 L0,110 Z" fill="url(#lphArea)"/>
+<path d="M0,82 L26,76 L52,80 L78,64 L104,68 L130,52 L156,58 L182,42 L208,46 L234,30 L260,36 L286,22 L320,16" fill="none" stroke="url(#lphLine)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="600" style="animation:lp-draw 1.8s ease both .3s"/>
+<circle cx="320" cy="16" r="3.4" fill="#19e3d6"/><circle cx="320" cy="16" r="6.5" fill="#19e3d6" opacity="0.22"/>
+</svg>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="lph-flag a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Credit memo ready &middot; PDF</div>
+<div class="lph-flag b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>4,812 rows scored</div>
+</div>
+</section>
+<section class="lp-section lp-social">
+<style>
+.lp-social .lps-head{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;margin-bottom:54px}
+.lp-social .lps-logos{margin-bottom:64px}
+.lp-social .lps-logos .lp-logos{grid-template-columns:repeat(6,1fr);gap:14px;row-gap:30px}
+.lp-social .lps-logos .wm svg{width:17px;height:17px;flex:none;opacity:.85}
+.lp-social .lps-quotes{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.lp-social .lps-q{display:flex;flex-direction:column;gap:22px;padding:28px}
+.lp-social .lps-q .qmark{width:30px;height:30px;color:var(--accent);opacity:.5}
+.lp-social .lps-q blockquote{margin:0;font-size:18px;line-height:1.55;color:var(--text);font-family:"Space Grotesk","Inter",sans-serif;font-weight:500;letter-spacing:-.3px}
+.lp-social .lps-foot{display:flex;align-items:center;gap:13px;margin-top:auto;padding-top:6px}
+.lp-social .lps-av{width:42px;height:42px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-family:"Space Grotesk","Inter",sans-serif;font-weight:700;font-size:14px;letter-spacing:-.4px;color:#04201e;background:var(--grad);box-shadow:0 6px 18px -8px rgba(25,227,214,.6)}
+.lp-social .lps-av.p{background:linear-gradient(135deg,#8b7bff,#5fe3cf);color:#0a0618}
+.lp-social .lps-meta{display:flex;flex-direction:column;gap:2px}
+.lp-social .lps-meta .nm{font-size:14px;font-weight:600;color:var(--text)}
+.lp-social .lps-meta .rl{font-size:12.5px;color:var(--faint)}
+.lp-social .lps-cs{display:inline-flex;align-items:center;gap:7px;margin-left:auto;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;cursor:pointer;transition:gap .18s ease,color .18s ease}
+.lp-social .lps-cs:hover{gap:11px;color:#5fe3cf}
+.lp-social .lps-cs svg{width:14px;height:14px}
+@media (max-width:980px){.lp-social .lps-logos .lp-logos{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:860px){.lp-social .lps-quotes{grid-template-columns:1fr}}
+@media (max-width:680px){.lp-social .lps-logos .lp-logos{grid-template-columns:repeat(2,1fr)}}
+</style>
+<div class="lp-wrap">
+
+<div class="lps-head">
+<span class="lp-eyebrow">Trusted across the credit stack</span>
+<h2 class="lp-h2">Risk teams decide faster<br>&mdash; and <span class="lp-grad">defend every call.</span></h2>
+<p class="lp-lead">From community lenders to BNPL platforms, underwriting teams ship calibrated decisions and audit-ready credit memos on day one &mdash; no setup, no model to train.</p>
+</div>
+
+<div class="lps-logos">
+<div class="lp-logos">
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l4-7 5 9 4-6 5 4"/></svg>Northwind Finance</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7z"/></svg>Acme Lending</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>Sterling Credit Union</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/></svg>Meridian Capital</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18l6-9 4 5 3-4 5 8z"/></svg>BluePeak</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M4 9l8-6 8 6"/><circle cx="12" cy="14" r="3"/></svg>Harbor Bank</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 16l5-8 5 5 8-9"/></svg>Vantage Credit</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg>Cardinal Lending</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 19l6-12 4 7 3-5 5 10z"/></svg>Summit Mutual</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5"/></svg>Oakline</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 9v6"/></svg>Pinnacle BNPL</div>
+<div class="wm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 14c4 0 4-4 8-4s4 4 8 4M3 18c4 0 4-4 8-4s4 4 8 4"/></svg>Rivermark</div>
+</div>
+</div>
+
+<div class="lps-quotes">
+
+<div class="lp-card lp-card-glow lps-q">
+<svg class="qmark" viewBox="0 0 24 24" fill="currentColor"><path d="M9 7H5a2 2 0 00-2 2v4a2 2 0 002 2h2v3H4v2h5v-7H5V9h4zm10 0h-4a2 2 0 00-2 2v4a2 2 0 002 2h2v3h-3v2h5v-7h-4V9h4z"/></svg>
+<blockquote>We cut underwriting turnaround from days to minutes. The reason codes and written memo mean every approve or decline holds up the moment our auditors ask.</blockquote>
+<div class="lps-foot">
+<span class="lps-av">DH</span>
+<div class="lps-meta">
+<span class="nm">Dana Holt</span>
+<span class="rl">Head of Credit Risk, Meridian Capital</span>
+</div>
+<a class="lps-cs" data-go="login">Read case study
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</div>
+</div>
+
+<div class="lp-card lp-card-glow lps-q">
+<svg class="qmark" viewBox="0 0 24 24" fill="currentColor"><path d="M9 7H5a2 2 0 00-2 2v4a2 2 0 002 2h2v3H4v2h5v-7H5V9h4zm10 0h-4a2 2 0 00-2 2v4a2 2 0 002 2h2v3h-3v2h5v-7h-4V9h4z"/></svg>
+<blockquote>The PD came in genuinely calibrated against our book, so we trusted the grades from week one. Scoring a messy CSV in seconds changed how our analysts spend their day.</blockquote>
+<div class="lps-foot">
+<span class="lps-av p">RO</span>
+<div class="lps-meta">
+<span class="nm">Renee Okafor</span>
+<span class="rl">VP Lending Analytics, Pinnacle BNPL</span>
+</div>
+<a class="lps-cs" data-go="login">Read case study
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</div>
+</div>
+
+</div>
+
+</div>
+</section>
+<section class="lp-section lp-decision">
+<style>
+.lp-section.lp-decision{display:block;height:auto;padding:110px 0;border:0;border-radius:0;background:none;font-size:16px;font-weight:400;letter-spacing:normal;gap:0;color:var(--text)}
+.lp-decision .lpd-grid{display:grid;grid-template-columns:1fr 1.08fr;gap:56px;align-items:center}
+.lp-decision .lpd-left{display:flex;flex-direction:column;gap:22px}
+.lp-decision .lpd-checks{display:flex;flex-direction:column;gap:13px;margin-top:2px}
+.lp-decision .lpd-check{display:flex;align-items:flex-start;gap:11px;color:var(--muted);font-size:15px;line-height:1.45}
+.lp-decision .lpd-check b{color:var(--text);font-weight:600}
+.lp-decision .lpd-ck{flex:none;margin-top:1px;width:20px;height:20px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;background:rgba(25,227,214,.12);border:1px solid rgba(25,227,214,.28)}
+.lp-decision .lpd-ck svg{width:12px;height:12px;color:var(--accent)}
+.lp-decision .lpd-link{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-weight:600;font-size:15.5px;text-decoration:none;cursor:pointer;border:0;background:none;padding:0;font-family:inherit;width:fit-content;transition:gap .18s ease,filter .18s ease}
+.lp-decision .lpd-link:hover{gap:12px;filter:brightness(1.12)}
+.lp-decision .lpd-link svg{width:16px;height:16px}
+.lp-decision .lpd-app{padding:18px 20px 20px}
+.lp-decision .lpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.lp-decision .lpd-htitle{font-family:"Space Grotesk","Inter",sans-serif;font-weight:700;font-size:14.5px;letter-spacing:-.4px;color:var(--text);display:flex;align-items:center;gap:9px}
+.lp-decision .lpd-sliders{display:flex;flex-direction:column;gap:15px;margin-bottom:18px}
+.lp-decision .lpd-sl .slh{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.lp-decision .lpd-sl .slk{font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--faint);font-weight:600}
+.lp-decision .lpd-sl .slv{font-family:"Space Grotesk","Inter",sans-serif;font-size:13.5px;font-weight:700;letter-spacing:-.3px;color:var(--text)}
+.lp-decision .lpd-track{position:relative;height:6px;border-radius:4px;background:rgba(255,255,255,.06)}
+.lp-decision .lpd-fill{position:absolute;inset:0 auto 0 0;height:100%;border-radius:4px;background:linear-gradient(90deg,#19e3d6,#8b7bff)}
+.lp-decision .lpd-knob{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:#0d0f16;border:2px solid var(--accent);transform:translate(-50%,-50%);box-shadow:0 0 12px -2px rgba(25,227,214,.7)}
+.lp-decision .lpd-panel{border-top:1px solid var(--line);padding-top:16px}
+.lp-decision .lpd-drow{display:flex;align-items:center;gap:13px;margin-bottom:14px}
+.lp-decision .lpd-pd{display:flex;flex-direction:column;gap:3px;margin-left:auto;text-align:right}
+.lp-decision .lpd-pd .v{font-family:"Space Grotesk","Inter",sans-serif;font-weight:700;font-size:19px;letter-spacing:-.6px;color:var(--text);line-height:1}
+.lp-decision .lpd-pd .k{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--faint);font-weight:600}
+.lp-decision .lpd-rclabel{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--faint);font-weight:600;margin:4px 0 4px}
+.lp-decision .lpd-memo{margin-top:14px;padding:13px 14px;border-radius:11px;background:rgba(139,123,255,.06);border:1px solid rgba(139,123,255,.18)}
+.lp-decision .lpd-memo .mh{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:11.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--accent2)}
+.lp-decision .lpd-memo .mh svg{width:13px;height:13px;color:var(--accent2)}
+.lp-decision .lpd-memo p{margin:0;font-size:12.5px;line-height:1.6;color:var(--muted)}
+.lp-decision .lpd-memo p b{color:var(--text);font-weight:600}
+.lp-decision .lpd-flag{position:absolute;z-index:3;display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border-radius:11px;background:rgba(13,15,19,.92);border:1px solid var(--line2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 16px 40px -16px rgba(0,0,0,.8);font-size:12px;color:var(--text);font-weight:600;animation:lp-float 5.5s ease-in-out infinite}
+.lp-decision .lpd-flag svg{width:14px;height:14px;color:var(--accent)}
+.lp-decision .lpd-flag.a{top:-16px;right:18px}
+.lp-decision .lpd-fwrap{position:relative}
+@media (max-width:860px){.lp-decision .lpd-grid{grid-template-columns:1fr;gap:40px}.lp-decision .lpd-flag{display:none}}
+</style>
+<div class="lp-wrap">
+<div class="lpd-grid">
+
+<div class="lpd-left">
+<span class="lp-eyebrow">Decisioning</span>
+<h2 class="lp-h2">From a raw application to a <span class="lp-grad">defensible decision</span></h2>
+<p class="lp-lead">Enter an applicant or drop in a messy CSV. The engine returns a calibrated probability of default, an A&ndash;F risk grade, and an APPROVE / REFER / DECLINE call &mdash; each backed by ranked reason codes and a written AI credit memo you can defend in an audit.</p>
+<div class="lpd-checks">
+<div class="lpd-check"><span class="lpd-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span><b>Calibrated PD</b> &mdash; probabilities you can act on, not raw scores.</span></div>
+<div class="lpd-check"><span class="lpd-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span><b>Ranked reason codes</b> &mdash; every driver, signed and weighted.</span></div>
+<div class="lpd-check"><span class="lpd-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span><b>Audit-ready memo</b> &mdash; a written rationale, exportable to PDF.</span></div>
+</div>
+<button class="lpd-link" data-go="login">Launch the scorer
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</div>
+
+<div class="lpd-fwrap">
+<div class="lp-frame">
+<div class="lp-frame-bar">
+<span class="lp-frame-dot r"></span><span class="lp-frame-dot y"></span><span class="lp-frame-dot g"></span>
+<span class="lp-frame-url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>app.creditrisk.engine/score</span>
+</div>
+<div class="lp-frame-body">
+<div class="lpd-app">
+
+<div class="lpd-head">
+<div class="lpd-htitle">Score applicant <span class="lp-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Live</span></div>
+<span class="lp-chip" style="padding:6px 12px;font-size:12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>~6ms / score</span>
+</div>
+
+<div class="lpd-sliders">
+<div class="lpd-sl">
+<div class="slh"><span class="slk">Loan amount</span><span class="slv">$32,000</span></div>
+<div class="lpd-track"><span class="lpd-fill" style="width:64%"></span><span class="lpd-knob" style="left:64%"></span></div>
+</div>
+<div class="lpd-sl">
+<div class="slh"><span class="slk">Annual income</span><span class="slv">$58,400</span></div>
+<div class="lpd-track"><span class="lpd-fill" style="width:41%"></span><span class="lpd-knob" style="left:41%"></span></div>
+</div>
+<div class="lpd-sl">
+<div class="slh"><span class="slk">DTI ratio</span><span class="slv">38%</span></div>
+<div class="lpd-track"><span class="lpd-fill" style="width:76%"></span><span class="lpd-knob" style="left:76%"></span></div>
+</div>
+<div class="lpd-sl">
+<div class="slh"><span class="slk">Credit utilization</span><span class="slv">71%</span></div>
+<div class="lpd-track"><span class="lpd-fill" style="width:71%"></span><span class="lpd-knob" style="left:71%"></span></div>
+</div>
+</div>
+
+<div class="lpd-panel">
+<div class="lpd-drow">
+<span class="lp-decision refer">Refer</span>
+<span class="lp-grade c">C</span>
+<div class="lpd-pd"><span class="v">9.1%</span><span class="k">PD &middot; 42% confidence</span></div>
+</div>
+
+<div class="lpd-rclabel">Top reason codes</div>
+<div class="lp-rcbar pos"><div class="rc-l">High DTI (38%) <b>+3.4%</b></div><div class="rc-t"><span class="rc-f" style="width:84%"></span></div></div>
+<div class="lp-rcbar pos"><div class="rc-l">Utilization above 70% <b>+2.6%</b></div><div class="rc-t"><span class="rc-f" style="width:66%"></span></div></div>
+<div class="lp-rcbar pos"><div class="rc-l">Thin file (14mo) <b>+1.5%</b></div><div class="rc-t"><span class="rc-f" style="width:42%"></span></div></div>
+<div class="lp-rcbar neg"><div class="rc-l">No recent delinquencies <b>&minus;1.2%</b></div><div class="rc-t"><span class="rc-f" style="width:36%"></span></div></div>
+
+<div class="lpd-memo">
+<div class="mh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>AI credit memo</div>
+<p>Applicant presents a <b>moderate-risk profile (Grade C, PD 9.1%)</b>. Affordability is the primary concern: a 38% DTI and 71% utilization elevate default probability, while a clean repayment history partly offsets it. <b>Recommend REFER</b> for manual income verification before a final approval.</p>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="lpd-flag a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Reason codes signed &amp; ranked</div>
+</div>
+
+</div>
+</div>
+</section>
+<section class="lp-section lp-ask">
+<style>
+.lp-ask .lpa-grid{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center;margin-top:54px}
+.lp-ask .lpa-left{display:flex;flex-direction:column;gap:22px}
+.lp-ask .lpa-teams{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.lp-ask .lpa-team{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--muted);font-size:12.5px;font-weight:600;font-family:"Space Grotesk","Inter",sans-serif}
+.lp-ask .lpa-team .dot{width:7px;height:7px;border-radius:50%;flex:none}
+.lp-ask .lpa-team.und .dot{background:var(--accent);box-shadow:0 0 8px 1px rgba(25,227,214,.7)}
+.lp-ask .lpa-team.risk .dot{background:var(--accent2);box-shadow:0 0 8px 1px rgba(139,123,255,.7)}
+.lp-ask .lpa-team.comp .dot{background:var(--green);box-shadow:0 0 8px 1px rgba(61,220,151,.7)}
+.lp-ask .lpa-team.coll .dot{background:var(--amber);box-shadow:0 0 8px 1px rgba(245,177,76,.7)}
+.lp-ask .lpa-bar{display:flex;align-items:center;gap:11px;width:100%;padding:14px 16px;border-radius:13px;background:var(--panel2);border:1px solid var(--line2);margin-top:6px;cursor:pointer;text-align:left;font-family:inherit;transition:border-color .2s ease,box-shadow .2s ease}
+.lp-ask .lpa-bar:hover{border-color:rgba(25,227,214,.4);box-shadow:0 16px 44px -24px rgba(25,227,214,.35)}
+.lp-ask .lpa-bar .ic{width:18px;height:18px;flex:none;color:var(--accent)}
+.lp-ask .lpa-bar .ph{flex:1;color:var(--faint);font-size:14px}
+.lp-ask .lpa-bar .send{width:30px;height:30px;flex:none;border-radius:8px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;color:#04201e;box-shadow:0 6px 18px -8px rgba(25,227,214,.6)}
+.lp-ask .lpa-bar .send svg{width:15px;height:15px}
+.lp-ask .lpa-stage{position:relative;height:472px;-webkit-mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent);overflow:hidden}
+.lp-ask .lpa-track{display:flex;flex-direction:column;gap:12px;animation:lpa-vscroll 34s linear infinite;will-change:transform}
+.lp-ask .lpa-stage:hover .lpa-track{animation-play-state:paused}
+.lp-ask .lpa-q{display:flex;align-items:flex-start;gap:13px;padding:15px 17px;border-radius:13px;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.lp-ask .lpa-q:hover{transform:translateX(4px);border-color:rgba(25,227,214,.4);box-shadow:0 16px 44px -24px rgba(25,227,214,.35)}
+.lp-ask .lpa-q .qmk{width:26px;height:26px;flex:none;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;margin-top:1px}
+.lp-ask .lpa-q .qmk svg{width:14px;height:14px}
+.lp-ask .lpa-q.und .qmk{background:rgba(25,227,214,.12);color:var(--accent);border:1px solid rgba(25,227,214,.28)}
+.lp-ask .lpa-q.risk .qmk{background:rgba(139,123,255,.12);color:var(--accent2);border:1px solid rgba(139,123,255,.3)}
+.lp-ask .lpa-q.comp .qmk{background:rgba(61,220,151,.12);color:var(--green);border:1px solid rgba(61,220,151,.3)}
+.lp-ask .lpa-q.coll .qmk{background:rgba(245,177,76,.12);color:var(--amber);border:1px solid rgba(245,177,76,.3)}
+.lp-ask .lpa-q .qbody{display:flex;flex-direction:column;gap:5px}
+.lp-ask .lpa-q .qt{font-size:14px;color:var(--text);line-height:1.4;font-weight:500}
+.lp-ask .lpa-q .qtag{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;font-family:"Space Grotesk","Inter",sans-serif}
+.lp-ask .lpa-q.und .qtag{color:var(--accent)}
+.lp-ask .lpa-q.risk .qtag{color:var(--accent2)}
+.lp-ask .lpa-q.comp .qtag{color:var(--green)}
+.lp-ask .lpa-q.coll .qtag{color:var(--amber)}
+@keyframes lpa-vscroll{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+@media (max-width:860px){.lp-ask .lpa-grid{grid-template-columns:1fr;gap:38px}.lp-ask .lpa-stage{height:420px}}
+@media (prefers-reduced-motion:reduce){.lp-ask .lpa-track{animation:none!important}}
+</style>
+<div class="lp-wrap">
+<div class="lp-center" style="display:flex;flex-direction:column;align-items:center;gap:18px">
+<span class="lp-eyebrow">Ask Anything</span>
+<h2 class="lp-h2">Ask anything about a borrower<br>or your <span class="lp-grad">whole book</span></h2>
+<p class="lp-lead">Type a question in plain English. The engine reads decisions, reason codes, calibration and drift across your portfolio &mdash; and answers with numbers, charts, and a written rationale you can drop straight into a memo.</p>
+</div>
+
+<div class="lpa-grid">
+<div class="lpa-left">
+<h3 class="lp-h3">Built for every desk that touches a decision.</h3>
+<p class="lp-lead" style="font-size:16px">From a single referred application to month-end approval mix &mdash; underwriting, risk, compliance and collections all query the same scored book, in the same language.</p>
+<div class="lpa-teams">
+<span class="lpa-team und"><span class="dot"></span>Underwriting</span>
+<span class="lpa-team risk"><span class="dot"></span>Risk</span>
+<span class="lpa-team comp"><span class="dot"></span>Compliance</span>
+<span class="lpa-team coll"><span class="dot"></span>Collections</span>
+</div>
+<button class="lpa-bar" data-go="login" aria-label="Ask a question about your book">
+<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+<span class="ph">Ask about an applicant, a segment, or the model&hellip;</span>
+<span class="send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</button>
+</div>
+
+<div class="lpa-stage" aria-hidden="true">
+<div class="lpa-track">
+
+<div class="lpa-q und"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><div class="qbody"><span class="qtag">Underwriting</span><span class="qt">Why was application #4821 referred rather than approved?</span></div></div>
+
+<div class="lpa-q risk"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span><div class="qbody"><span class="qtag">Risk</span><span class="qt">Which features pushed this PD above 10%?</span></div></div>
+
+<div class="lpa-q comp"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7z"/></svg></span><div class="qbody"><span class="qtag">Compliance</span><span class="qt">Show every decline with DTI over 45% last week.</span></div></div>
+
+<div class="lpa-q risk"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span><div class="qbody"><span class="qtag">Risk</span><span class="qt">What&rsquo;s our approval rate by risk grade this month?</span></div></div>
+
+<div class="lpa-q comp"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7z"/></svg></span><div class="qbody"><span class="qtag">Compliance</span><span class="qt">Generate the adverse-action notice for this applicant.</span></div></div>
+
+<div class="lpa-q risk"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span><div class="qbody"><span class="qtag">Risk</span><span class="qt">Which segment is drifting from the calibration curve?</span></div></div>
+
+<div class="lpa-q und"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><div class="qbody"><span class="qtag">Underwriting</span><span class="qt">Summarize the credit memo for borrower Maya R. in three lines.</span></div></div>
+
+<div class="lpa-q coll"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div class="qbody"><span class="qtag">Collections</span><span class="qt">Rank open accounts by predicted default in the next 90 days.</span></div></div>
+
+<div class="lpa-q comp"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7z"/></svg></span><div class="qbody"><span class="qtag">Compliance</span><span class="qt">Are any reason codes being used disproportionately by region?</span></div></div>
+
+<div class="lpa-q und"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><div class="qbody"><span class="qtag">Underwriting</span><span class="qt">What would it take to move grade C applicants up to a B?</span></div></div>
+
+<div class="lpa-q risk"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span><div class="qbody"><span class="qtag">Risk</span><span class="qt">Compare this batch&rsquo;s average PD against last quarter.</span></div></div>
+
+<div class="lpa-q coll"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div class="qbody"><span class="qtag">Collections</span><span class="qt">Which referred accounts cleared on second review last month?</span></div></div>
+
+<div class="lpa-q comp"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7z"/></svg></span><div class="qbody"><span class="qtag">Compliance</span><span class="qt">Export an audit-ready PDF of every decision in this run.</span></div></div>
+
+<div class="lpa-q und"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><div class="qbody"><span class="qtag">Underwriting</span><span class="qt">Flag any approvals where confidence dropped below A&minus;.</span></div></div>
+
+<div class="lpa-q und"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><div class="qbody"><span class="qtag">Underwriting</span><span class="qt">Why was application #4821 referred rather than approved?</span></div></div>
+
+<div class="lpa-q risk"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span><div class="qbody"><span class="qtag">Risk</span><span class="qt">Which features pushed this PD above 10%?</span></div></div>
+
+<div class="lpa-q comp"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7z"/></svg></span><div class="qbody"><span class="qtag">Compliance</span><span class="qt">Show every decline with DTI over 45% last week.</span></div></div>
+
+<div class="lpa-q risk"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span><div class="qbody"><span class="qtag">Risk</span><span class="qt">What&rsquo;s our approval rate by risk grade this month?</span></div></div>
+
+<div class="lpa-q comp"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7z"/></svg></span><div class="qbody"><span class="qtag">Compliance</span><span class="qt">Generate the adverse-action notice for this applicant.</span></div></div>
+
+<div class="lpa-q risk"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span><div class="qbody"><span class="qtag">Risk</span><span class="qt">Which segment is drifting from the calibration curve?</span></div></div>
+
+<div class="lpa-q und"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><div class="qbody"><span class="qtag">Underwriting</span><span class="qt">Summarize the credit memo for borrower Maya R. in three lines.</span></div></div>
+
+<div class="lpa-q coll"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div class="qbody"><span class="qtag">Collections</span><span class="qt">Rank open accounts by predicted default in the next 90 days.</span></div></div>
+
+<div class="lpa-q comp"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7z"/></svg></span><div class="qbody"><span class="qtag">Compliance</span><span class="qt">Are any reason codes being used disproportionately by region?</span></div></div>
+
+<div class="lpa-q und"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><div class="qbody"><span class="qtag">Underwriting</span><span class="qt">What would it take to move grade C applicants up to a B?</span></div></div>
+
+<div class="lpa-q risk"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span><div class="qbody"><span class="qtag">Risk</span><span class="qt">Compare this batch&rsquo;s average PD against last quarter.</span></div></div>
+
+<div class="lpa-q coll"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div class="qbody"><span class="qtag">Collections</span><span class="qt">Which referred accounts cleared on second review last month?</span></div></div>
+
+<div class="lpa-q comp"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7z"/></svg></span><div class="qbody"><span class="qtag">Compliance</span><span class="qt">Export an audit-ready PDF of every decision in this run.</span></div></div>
+
+<div class="lpa-q und"><span class="qmk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><div class="qbody"><span class="qtag">Underwriting</span><span class="qt">Flag any approvals where confidence dropped below A&minus;.</span></div></div>
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="lp-section lp-metrics">
+<style>
+.lp-metrics .lpm-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:18px;margin-top:54px;align-items:stretch}
+.lp-metrics .lpm-codehead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.lp-metrics .lpm-file{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text);font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.lp-metrics .lpm-file svg{width:14px;height:14px;color:var(--accent);flex:none}
+.lp-metrics .lpm-code{background:rgba(0,0,0,.32);border:1px solid var(--line);border-radius:11px;padding:16px 16px 16px 14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.7;overflow:hidden;counter-reset:ln}
+.lp-metrics .lpm-line{display:flex;gap:14px;white-space:pre}
+.lp-metrics .lpm-line::before{counter-increment:ln;content:counter(ln);color:var(--faint);opacity:.55;width:16px;text-align:right;flex:none;-webkit-user-select:none;user-select:none}
+.lp-metrics .c-key{color:#8b7bff}
+.lp-metrics .c-prop{color:#7fb6ff}
+.lp-metrics .c-num{color:#19e3d6}
+.lp-metrics .c-str{color:#3ddc97}
+.lp-metrics .c-cmt{color:var(--faint);font-style:italic}
+.lp-metrics .lpm-foot{display:flex;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.lp-metrics .lpm-foot .meta{font-size:11.5px;color:var(--faint);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.lp-metrics .lpm-rd{display:flex;flex-direction:column;height:100%}
+.lp-metrics .lpm-rdhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+.lp-metrics .lpm-rdhead .t{font-size:13.5px;color:var(--text);font-weight:600}
+.lp-metrics .lpm-rdhead .s{font-size:11.5px;color:var(--faint);margin-top:3px}
+.lp-metrics .lpm-chart{position:relative;margin:4px 0 10px}
+.lp-metrics .lpm-svg{display:block;width:100%;height:auto}
+.lp-metrics .lpm-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.lp-metrics .lpm-leg{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted)}
+.lp-metrics .lpm-leg .ln{width:16px;height:0;border-top:2px solid currentColor;flex:none}
+.lp-metrics .lpm-leg.ref{color:var(--faint)}
+.lp-metrics .lpm-leg.ref .ln{border-top-style:dashed}
+.lp-metrics .lpm-leg.cal{color:var(--accent)}
+.lp-metrics .lpm-cap{margin-top:auto;display:flex;align-items:center;gap:9px;padding:11px 13px;border-radius:10px;background:rgba(25,227,214,.06);border:1px solid rgba(25,227,214,.2);font-size:12px;color:var(--muted)}
+.lp-metrics .lpm-cap b{color:#8feac0;font-weight:600}
+.lp-metrics .lpm-cap svg{width:14px;height:14px;color:var(--accent);flex:none}
+@media (max-width:860px){.lp-metrics .lpm-grid{grid-template-columns:1fr}}
+</style>
+<div class="lp-wrap lp-center">
+<span class="lp-eyebrow">Governed Model</span>
+<h2 class="lp-h2" style="margin-top:18px">Calibrated decisions you can <span class="lp-grad">actually trust</span></h2>
+<p class="lp-lead" style="margin-top:18px">Define the policy once &mdash; model, isotonic calibration, risk bands and reason codes &mdash; and every applicant comes back with a consistent, explainable, auditable decision. No drift between analysts, no surprises at review.</p>
+</div>
+
+<div class="lp-wrap">
+<div class="lpm-grid">
+
+<div class="lp-card lp-card-glow">
+<div class="lpm-codehead">
+<span class="lpm-file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>policy.risk_bands.yaml</span>
+<span class="lp-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>Calibrated</span>
+</div>
+<div class="lpm-code">
+<div class="lpm-line"><span class="c-cmt"># single source of truth &mdash; versioned</span></div>
+<div class="lpm-line"><span class="c-key">model</span>:        <span class="c-str">gbm_pd_v4</span>   <span class="c-cmt"># AUC 0.795</span></div>
+<div class="lpm-line"><span class="c-key">calibration</span>:  <span class="c-str">isotonic</span></div>
+<div class="lpm-line"><span class="c-key">output</span>:       <span class="c-str">pd</span>          <span class="c-cmt"># calibrated PD [0,1]</span></div>
+<div class="lpm-line"> </div>
+<div class="lpm-line"><span class="c-key">bands</span>:                  <span class="c-cmt"># PD cutoff &rarr; grade</span></div>
+<div class="lpm-line">  <span class="c-prop">A</span>: { <span class="c-prop">max_pd</span>: <span class="c-num">0.03</span>, <span class="c-prop">decision</span>: <span class="c-str">APPROVE</span> }</div>
+<div class="lpm-line">  <span class="c-prop">B</span>: { <span class="c-prop">max_pd</span>: <span class="c-num">0.07</span>, <span class="c-prop">decision</span>: <span class="c-str">APPROVE</span> }</div>
+<div class="lpm-line">  <span class="c-prop">C</span>: { <span class="c-prop">max_pd</span>: <span class="c-num">0.15</span>, <span class="c-prop">decision</span>: <span class="c-str">REFER</span>   }</div>
+<div class="lpm-line">  <span class="c-prop">D</span>: { <span class="c-prop">max_pd</span>: <span class="c-num">0.30</span>, <span class="c-prop">decision</span>: <span class="c-str">REFER</span>   }</div>
+<div class="lpm-line">  <span class="c-prop">F</span>: { <span class="c-prop">max_pd</span>: <span class="c-num">1.00</span>, <span class="c-prop">decision</span>: <span class="c-str">DECLINE</span> }</div>
+<div class="lpm-line"> </div>
+<div class="lpm-line"><span class="c-key">reason_codes</span>: { <span class="c-prop">method</span>: <span class="c-str">shap</span>, <span class="c-prop">top_k</span>: <span class="c-num">5</span> }</div>
+</div>
+<div class="lpm-foot">
+<span class="lp-decision approve">Approve</span>
+<span class="lp-decision refer">Refer</span>
+<span class="lp-decision decline">Decline</span>
+<span class="meta" style="margin-left:auto">v4 &middot; locked &middot; audit-logged</span>
+</div>
+</div>
+
+<div class="lp-card">
+<div class="lpm-rd">
+<div class="lpm-rdhead">
+<div><div class="t">Reliability diagram</div><div class="s">Predicted PD vs. observed default rate</div></div>
+<span class="lp-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>10 bins</span>
+</div>
+
+<div class="lpm-legend">
+<span class="lpm-leg ref"><span class="ln"></span>Perfect calibration</span>
+<span class="lpm-leg cal"><span class="ln"></span>Model (isotonic)</span>
+</div>
+
+<div class="lpm-chart">
+<svg class="lpm-svg" viewBox="0 0 320 230" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+<defs>
+<linearGradient id="lpmLine" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#19e3d6"/><stop offset="1" stop-color="#8b7bff"/></linearGradient>
+</defs>
+<g stroke="rgba(255,255,255,.07)" stroke-width="1">
+<line x1="44" y1="20" x2="44" y2="190"/>
+<line x1="44" y1="190" x2="300" y2="190"/>
+<line x1="108" y1="20" x2="108" y2="190"/>
+<line x1="172" y1="20" x2="172" y2="190"/>
+<line x1="236" y1="20" x2="236" y2="190"/>
+<line x1="300" y1="20" x2="300" y2="190"/>
+<line x1="44" y1="147.5" x2="300" y2="147.5"/>
+<line x1="44" y1="105" x2="300" y2="105"/>
+<line x1="44" y1="62.5" x2="300" y2="62.5"/>
+<line x1="44" y1="20" x2="300" y2="20"/>
+</g>
+<line x1="44" y1="190" x2="300" y2="20" stroke="var(--faint)" stroke-width="1.6" stroke-dasharray="5 5" opacity="0.7"/>
+<path d="M44,190 L70,167 L96,148 L121,124 L147,107 L172,86 L198,71 L223,52 L249,39 L274,28 L300,20" fill="none" stroke="url(#lpmLine)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="600" style="animation:lp-draw 1.8s ease both .25s"/>
+<g fill="#19e3d6">
+<circle cx="70" cy="167" r="3"/><circle cx="96" cy="148" r="3"/><circle cx="121" cy="124" r="3"/><circle cx="147" cy="107" r="3"/><circle cx="172" cy="86" r="3"/><circle cx="198" cy="71" r="3"/><circle cx="223" cy="52" r="3"/><circle cx="249" cy="39" r="3"/><circle cx="274" cy="28" r="3"/>
+</g>
+<g fill="var(--faint)" font-size="9" font-family="ui-monospace,Menlo,monospace">
+<text x="44" y="204" text-anchor="middle">0</text>
+<text x="172" y="204" text-anchor="middle">0.5</text>
+<text x="300" y="204" text-anchor="middle">1.0</text>
+<text x="38" y="193" text-anchor="end">0</text>
+<text x="38" y="108" text-anchor="end">0.5</text>
+<text x="38" y="24" text-anchor="end">1.0</text>
+<text x="172" y="220" text-anchor="middle" fill="var(--muted)">Predicted PD</text>
+</g>
+</svg>
+</div>
+
+<div class="lpm-cap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
+<span>Brier <b>0.118 &rarr; 0.092</b> after isotonic calibration &middot; ECE &lt; 0.02</span>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+<section class="lp-section lp-integrations">
+<style>
+.lp-integrations .lpi-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;margin-top:54px}
+.lp-integrations .lpi-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;padding:22px 12px;text-align:center}
+.lp-integrations .lpi-tile .gl{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line);transition:border-color .2s ease,background .2s ease}
+.lp-integrations .lpi-tile:hover .gl{border-color:rgba(25,227,214,.4);background:rgba(25,227,214,.06)}
+.lp-integrations .lpi-tile .gl svg{width:21px;height:21px;color:var(--accent)}
+.lp-integrations .lpi-tile .lb{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:-.2px}
+.lp-integrations .lpi-note{margin-top:38px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+.lp-integrations .lpi-note .nt{font-size:14px;color:var(--faint)}
+.lp-integrations .lpi-note .nt b{color:var(--muted);font-weight:600}
+.lp-integrations .lpi-up{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--accent);text-decoration:none;cursor:pointer;transition:gap .18s ease,color .18s ease}
+.lp-integrations .lpi-up:hover{gap:11px;color:#fff}
+.lp-integrations .lpi-up svg{width:14px;height:14px}
+@media (max-width:980px){.lp-integrations .lpi-grid{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:680px){.lp-integrations .lpi-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+<div class="lp-wrap lp-center">
+<span class="lp-eyebrow">All your data</span>
+<h2 class="lp-h2" style="margin-top:18px">Works with any data &mdash;<br><span class="lp-grad">even messy CSVs</span></h2>
+<p class="lp-lead" style="margin-top:18px">Drop in any schema and the engine auto-detects columns, parses currency and percent text, imputes missing values, and clips outliers &mdash; no column mapping, no cleanup, no config. From a one-off export to a live warehouse, every source scores the same way.</p>
+
+<div class="lpi-grid">
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5" stroke-width="1.6"/></svg></span><span class="lb">CSV</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18M3 15h18M15 3v18" stroke-width="1.6"/></svg></span><span class="lb">Excel</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M9 9v12M9 13h11M9 17h11" stroke-width="1.6"/></svg></span><span class="lb">Google Sheets</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><span class="lb">PostgreSQL</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><span class="lb">MySQL</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9-9 9-9-9z"/><path d="M8 12l4-4 4 4-4 4-4-4z" stroke-width="1.6"/></svg></span><span class="lb">Snowflake</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 5 5-1-2 5 2 5-5-1-3 5-3-5-5 1 2-5-2-5 5 1z"/></svg></span><span class="lb">BigQuery</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="15" width="18" height="5" rx="1"/><path d="M7 6.5h.01M7 17.5h.01M11 6.5h6M11 17.5h6" stroke-width="1.6"/></svg></span><span class="lb">Redshift</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 14a4 4 0 01.5-7.97A6 6 0 0118 8a4 4 0 011 7.87"/><path d="M9 19l3-3 3 3M12 16v6" stroke-width="1.6"/></svg></span><span class="lb">Amazon S3</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l9-3 9 3-9 3-9-3z"/><path d="M3 6v6l9 3 9-3V6M12 9v12" stroke-width="1.6"/></svg></span><span class="lb">Parquet</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4 4 4 0 010 8 4 4 0 01-8 0 4 4 0 010-8 4 4 0 014-4z"/><circle cx="12" cy="12" r="2.5" stroke-width="1.6"/></svg></span><span class="lb">Salesforce</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M14 9.5c-.5-.7-1.5-1-2.5-1-1.4 0-2.5.7-2.5 1.8 0 2.4 5 1.3 5 3.6 0 1.1-1.1 1.8-2.6 1.8-1.1 0-2.1-.4-2.6-1.1" stroke-width="1.6"/></svg></span><span class="lb">Stripe</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 14h4" stroke-width="1.6"/></svg></span><span class="lb">Plaid</span></div>
+<div class="lp-card lpi-tile"><span class="gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16" stroke-linecap="round"/></svg></span><span class="lb">REST API</span></div>
+</div>
+
+<div class="lpi-note">
+<span class="nt">&hellip; and <b>any column layout</b> &mdash; it auto-cleans on import.</span>
+<a class="lpi-up" data-go="login">Upload a CSV
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</div>
+</div>
+</section>
+<section class="lp-section lp-governance">
+<style>
+.lp-governance .lpg-head{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;margin-bottom:60px}
+.lp-governance .lpg-links{display:flex;gap:28px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.lp-governance .lpg-link{display:inline-flex;align-items:center;gap:7px;color:var(--accent);font-size:14.5px;font-weight:600;font-family:"Space Grotesk","Inter",sans-serif;text-decoration:none;background:none;border:0;cursor:pointer;padding:0;transition:gap .18s ease,filter .18s ease}
+.lp-governance .lpg-link:hover{gap:11px;filter:brightness(1.12)}
+.lp-governance .lpg-link svg{width:15px;height:15px}
+.lp-governance .lpg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.lp-governance .lpg-card{display:flex;flex-direction:column;gap:13px}
+.lp-governance .lpg-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(25,227,214,.09);border:1px solid rgba(25,227,214,.22);color:var(--accent);flex:none;box-shadow:0 8px 22px -12px rgba(25,227,214,.5)}
+.lp-governance .lpg-ic.alt{background:rgba(139,123,255,.10);border-color:rgba(139,123,255,.26);color:var(--accent2);box-shadow:0 8px 22px -12px rgba(139,123,255,.5)}
+.lp-governance .lpg-ic svg{width:20px;height:20px}
+.lp-governance .lpg-card h3{margin:0}
+.lp-governance .lpg-desc{color:var(--muted);font-size:14px;line-height:1.62;margin:0}
+@media (max-width:860px){.lp-governance .lpg-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:680px){.lp-governance .lpg-grid{grid-template-columns:1fr}}
+</style>
+<div class="lp-wrap">
+<div class="lpg-head">
+<span class="lp-eyebrow">Trust &amp; Governance</span>
+<h2 class="lp-h2">Explainable, fair, and<br><span class="lp-grad">audit-ready by design</span></h2>
+<p class="lp-lead">Every score ships with the evidence regulators ask for &mdash; calibrated probabilities, ranked reason codes, a written rationale, and a full audit trail. Governed end to end, from intake to adverse-action notice.</p>
+<div class="lpg-links">
+<button class="lpg-link" data-go="login">Explore governance
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<button class="lpg-link" data-go="login">View the model card
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</div>
+</div>
+
+<div class="lpg-grid">
+
+<div class="lp-card lp-card-glow lpg-card">
+<span class="lpg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
+<h3 class="lp-h3">Reason codes on every decision</h3>
+<p class="lpg-desc">Each PD is decomposed into ranked, human-readable drivers &mdash; so applicants and reviewers see exactly what moved the score.</p>
+</div>
+
+<div class="lp-card lpg-card">
+<span class="lpg-ic alt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M4 16c4-1 6-9 10-9s4 6 6 6"/></svg></span>
+<h3 class="lp-h3">Calibrated probabilities</h3>
+<p class="lpg-desc">Isotonic calibration keeps stated PDs honest &mdash; a predicted 7% default rate lands near 7% in production.</p>
+</div>
+
+<div class="lp-card lpg-card">
+<span class="lpg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span>
+<h3 class="lp-h3">Human-in-the-loop review</h3>
+<p class="lpg-desc">Borderline applicants route to a REFER queue for analyst sign-off &mdash; no edge case auto-decides in silence.</p>
+</div>
+
+<div class="lp-card lpg-card">
+<span class="lpg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></span>
+<h3 class="lp-h3">Audit trail &amp; versioning</h3>
+<p class="lpg-desc">Inputs, model version, and outcome are immutably logged per applicant &mdash; replay any historical decision on demand.</p>
+</div>
+
+<div class="lp-card lpg-card">
+<span class="lpg-ic alt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
+<h3 class="lp-h3">Adverse-action &amp; fairness</h3>
+<p class="lpg-desc">Auto-generated adverse-action reasons plus disparate-impact monitoring across protected classes, built in.</p>
+</div>
+
+<div class="lp-card lp-card-glow lpg-card">
+<span class="lpg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 14l2.5 2.5L16 11"/></svg></span>
+<h3 class="lp-h3">Model card &amp; monitoring</h3>
+<p class="lpg-desc">A living model card tracks AUC, KS, and population stability (PSI) &mdash; with drift alerts before performance slips.</p>
+</div>
+
+</div>
+</div>
+</section>
+<section class="lp-section lp-faq">
+<style>
+.lp-faq .lp-faq-head{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;margin-bottom:54px}
+.lp-faq .lp-faq-list{max-width:820px;margin:0 auto}
+.lp-faq .lp-faq-item{border-bottom:1px solid var(--line)}
+.lp-faq .lp-faq-item summary{list-style:none;cursor:pointer;padding:22px 4px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-family:"Space Grotesk","Inter",sans-serif;font-weight:600;font-size:17px;color:var(--text);transition:color .15s ease}
+.lp-faq .lp-faq-item summary:hover{color:#fff}
+.lp-faq .lp-faq-item summary::-webkit-details-marker{display:none}
+.lp-faq .lp-faq-item summary .q{display:flex;align-items:center;gap:13px}
+.lp-faq .lp-faq-item summary .qn{font-family:"Space Grotesk","Inter",sans-serif;font-size:13px;font-weight:700;color:var(--accent);opacity:.8;min-width:24px}
+.lp-faq .lp-faq-item .chev{width:18px;height:18px;flex:none;color:var(--muted);transition:transform .25s ease}
+.lp-faq .lp-faq-item[open] summary{color:#fff}
+.lp-faq .lp-faq-item[open] summary .chev{transform:rotate(180deg);color:var(--accent)}
+.lp-faq .lp-faq-item .ans{padding:0 4px 24px 41px;color:var(--muted);font-size:15px;line-height:1.66;max-width:740px}
+.lp-faq .lp-faq-item .ans .lp-badge{margin-top:14px}
+.lp-faq .lp-faq-foot{text-align:center;margin-top:48px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.lp-faq .lp-faq-foot .ft{color:var(--muted);font-size:15px}
+@media (max-width:680px){.lp-faq .lp-faq-item .ans{padding-left:4px}}
+</style>
+<div class="lp-wrap">
+
+<div class="lp-faq-head">
+<span class="lp-eyebrow">FAQ</span>
+<h2 class="lp-h2">Questions, <span class="lp-grad">answered</span></h2>
+<p class="lp-lead">Everything you need to know about how the engine scores, explains, and governs every credit decision.</p>
+</div>
+
+<div class="lp-faq-list">
+
+<details class="lp-faq-item">
+<summary>
+<span class="q"><span class="qn">01</span>What is an AI-native credit decision engine?</span>
+<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+</summary>
+<div class="ans">It&rsquo;s a decisioning system with a calibrated machine-learning model at its core &mdash; not a static rules table. You upload applicant data and it returns a probability of default, an A&ndash;F risk grade, and an APPROVE&nbsp;/&nbsp;REFER&nbsp;/&nbsp;DECLINE decision with reason codes and a written credit memo &mdash; in roughly 6ms per score, with no manual scorecard maintenance.</div>
+</details>
+
+<details class="lp-faq-item">
+<summary>
+<span class="q"><span class="qn">02</span>How is this different from a traditional scorecard?</span>
+<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+</summary>
+<div class="ans">A traditional scorecard relies on fixed weights and manually binned variables that drift out of date and require analyst rebuilds. The engine learns non-linear interactions directly from data while preserving the transparency lenders expect &mdash; surfacing per-applicant reason codes and a plain-language rationale. You get higher discrimination (AUC 0.795, Gini 0.590) without giving up explainability.</div>
+</details>
+
+<details class="lp-faq-item">
+<summary>
+<span class="q"><span class="qn">03</span>Is every decision explainable?</span>
+<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+</summary>
+<div class="ans">Yes &mdash; every score ships with ranked reason codes that quantify each factor&rsquo;s contribution to the PD, an AI-written credit memo summarizing the rationale, and adverse-action language for declines. Nothing is a black box: a reviewer can trace exactly why an applicant was approved, referred, or declined before the decision is finalized.</div>
+</details>
+
+<details class="lp-faq-item">
+<summary>
+<span class="q"><span class="qn">04</span>What data can it score?</span>
+<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+</summary>
+<div class="ans">Any CSV &mdash; messy real-world exports included. The engine auto-cleans the file on ingest: it infers types, normalizes column names, handles missing values, and maps your fields to model features without manual templating. Drop in a raw applicant export and it scores the whole batch in seconds.</div>
+</details>
+
+<details class="lp-faq-item">
+<summary>
+<span class="q"><span class="qn">05</span>How accurate and calibrated is it?</span>
+<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+</summary>
+<div class="ans">The model reaches an AUC of 0.795 with KS 0.445, and predicted probabilities are isotonically calibrated &mdash; so a stated 5% PD genuinely means roughly 5 in 100 default, with a measurable Brier-score improvement over the raw output. These figures are illustrative, produced on synthetic data; revalidate against your own portfolio before relying on them.
+<span class="lp-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>Isotonic-calibrated PD</span></div>
+</details>
+
+<details class="lp-faq-item">
+<summary>
+<span class="q"><span class="qn">06</span>Is it governed and compliance-ready?</span>
+<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+</summary>
+<div class="ans">It&rsquo;s built for oversight: every decision is logged to an immutable audit trail, models are versioned, and human review can be required before any outcome is committed. Fairness checks run across segments to surface disparate impact early. As with any model, complete your own validation, documentation, and revalidation before deploying to production.</div>
+</details>
+
+</div>
+
+<div class="lp-faq-foot">
+<p class="ft">Still have a question about deployment or governance?</p>
+<button class="lp-btn lp-btn-primary" data-go="login">Talk to our team
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</div>
+
+</div>
+</section>
+<section class="lp-section lp-cta">
+<style>
+.lp-cta .lpc-wrap{position:relative}
+.lp-cta .lpc-glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:80%;height:130%;background:radial-gradient(ellipse at center,rgba(25,227,214,.14),rgba(139,123,255,.12) 45%,transparent 72%);filter:blur(50px);z-index:0;pointer-events:none}
+.lp-cta .lpc-panel{position:relative;z-index:1;border-radius:24px;padding:64px 40px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--line2);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 40px 120px -50px rgba(139,123,255,.5),inset 0 1px 0 rgba(255,255,255,.05);overflow:hidden}
+.lp-cta .lpc-panel::before{content:"";position:absolute;inset:-1px;border-radius:24px;padding:1px;background:linear-gradient(120deg,rgba(25,227,214,.45),rgba(139,123,255,.4),transparent 60%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:.7}
+.lp-cta .lpc-orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
+.lp-cta .lpc-orb.a{top:-90px;left:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(25,227,214,.18),transparent 70%)}
+.lp-cta .lpc-orb.b{bottom:-100px;right:-50px;width:260px;height:260px;background:radial-gradient(circle,rgba(139,123,255,.2),transparent 70%);animation:lp-float 6s ease-in-out infinite}
+.lp-cta .lpc-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:22px}
+.lp-cta .lpc-cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.lp-cta .lpc-trust{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;color:var(--faint);font-size:13px;font-weight:500;margin-top:2px}
+.lp-cta .lpc-trust .dot{width:3px;height:3px;border-radius:50%;background:var(--faint)}
+.lp-cta .lpc-trust b{color:var(--muted);font-weight:600}
+.lp-cta .lpc-trust svg{width:14px;height:14px;color:var(--accent)}
+@media (max-width:680px){.lp-cta .lpc-panel{padding:48px 24px}}
+</style>
+<div class="lp-wrap lpc-wrap">
+<div class="lpc-glow"></div>
+<div class="lpc-panel">
+<span class="lpc-orb a"></span>
+<span class="lpc-orb b"></span>
+<div class="lpc-content">
+<span class="lp-eyebrow">No signup &middot; runs in your browser</span>
+<h2 class="lp-h2">Score your first applicant<br><span class="lp-grad">in under a minute</span></h2>
+<p class="lp-lead">Upload a messy CSV or try a built-in sample &mdash; nothing leaves your browser. Get a calibrated PD, an A&ndash;F risk grade, an APPROVE / REFER / DECLINE call with reason codes, and an audit-ready credit memo on every row.</p>
+<div class="lpc-cta">
+<button class="lp-btn lp-btn-primary lp-btn-lg" data-go="login">Launch the app
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<a class="lp-btn lp-btn-ghost lp-btn-lg" data-go="login">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 115 0c0 1.5-2.5 2-2.5 4"/><path d="M12 17h.01"/></svg>See how it works</a>
+</div>
+<div class="lpc-trust">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+<b>No setup</b><span class="dot"></span>runs in your browser<span class="dot"></span><b>0.795 AUC</b><span class="dot"></span>~6ms / score<span class="dot"></span>audit-ready PDFs
+</div>
+</div>
+</div>
+</div>
+</section>
+<footer class="lp-footer">
+<style>
+.lp-footer .lpf-top{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.lp-footer .lpf-brand{display:flex;flex-direction:column;gap:14px;max-width:380px}
+.lp-footer .lpf-tag{color:var(--muted);font-size:14.5px;line-height:1.6;margin:0}
+.lp-footer .lpf-cta{display:flex;flex-direction:column;align-items:flex-start;gap:11px}
+.lp-footer .lpf-mv{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--faint);display:inline-flex;align-items:center;gap:6px}
+.lp-footer .lpf-mv svg{width:12px;height:12px;color:var(--accent);flex:none}
+.lp-footer .lpf-legal{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.lp-footer .lpf-legal a{color:var(--faint);text-decoration:none;font-size:13px;transition:color .15s ease}
+.lp-footer .lpf-legal a:hover{color:var(--text)}
+.lp-footer .lpf-note{max-width:760px;color:var(--faint);font-size:12px;line-height:1.6;margin:30px 0 0}
+@media (max-width:680px){.lp-footer .lpf-top{flex-direction:column;gap:24px}.lp-footer .lpf-cta{align-items:flex-start}}
+</style>
+<div class="lp-wrap">
+
+<div class="lpf-top lp-footer-top">
+<div class="lpf-brand">
+<a class="lp-logo" data-go="login"><span class="mk"></span>RiskEngine</a>
+<p class="lpf-tag">Calibrated probability of default, A&ndash;F risk grades, and audit-ready credit memos &mdash; from any messy CSV, in seconds.</p>
+</div>
+<div class="lpf-cta">
+<button class="lp-btn lp-btn-primary lp-btn-lg" data-go="login">Launch app
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<span class="lpf-mv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>model v2.4.1 &middot; AUC 0.795 &middot; calibrated</span>
+</div>
+</div>
+
+<div class="lp-footer-cols">
+<div class="lp-footer-col">
+<h4>Product</h4>
+<a href="#">Score applicant</a>
+<a href="#">Batch &amp; report</a>
+<a href="#">Monitoring</a>
+<a href="#">Model &amp; governance</a>
+<a href="#">API key</a>
+</div>
+<div class="lp-footer-col">
+<h4>Model</h4>
+<a href="#">Model card</a>
+<a href="#">Calibration</a>
+<a href="#">Risk bands</a>
+<a href="#">Reason codes</a>
+<a href="#">Versioning</a>
+</div>
+<div class="lp-footer-col">
+<h4>Resources</h4>
+<a href="#">How it works</a>
+<a href="#">Documentation</a>
+<a href="#">Sample CSV</a>
+<a href="#">Methodology</a>
+<a href="#">FAQ</a>
+</div>
+<div class="lp-footer-col">
+<h4>Company</h4>
+<a href="#">About</a>
+<a href="#">GitHub</a>
+<a href="#">Contact</a>
+<a href="#">Status</a>
+</div>
+</div>
+
+<div class="lp-footer-bottom">
+<span>&copy; 2026 Credit Risk Decision Engine</span>
+<div class="lpf-legal">
+<a href="#">Privacy</a>
+<a href="#">Terms</a>
+<a href="#">Security</a>
+</div>
+<div class="lp-footer-social">
+<a href="#" aria-label="X (Twitter)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.3 8.3L23 22h-6.6l-5.2-6.7L5.3 22H2.2l7.8-8.9L1.5 2h6.8l4.7 6.2L18.9 2zm-1.2 18h1.7L7.4 3.8H5.6L17.7 20z"/></svg></a>
+<a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+<a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 016 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.25 2.87.12 3.17.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0024 12.5C24 5.87 18.63.5 12 .5z"/></svg></a>
+</div>
+</div>
+
+<p class="lpf-note">Figures, grades, and decisions shown across this site are illustrative and generated on synthetic data. Not financial advice, a credit offer, or a guarantee of any lending outcome.</p>
+
+</div>
+</footer>
+</div>
 <header>
   <div class="wrap nav">
     <div class="brand"><span class="dot"></span> Credit Risk Decision Engine</div>
@@ -539,7 +1707,15 @@ make api        # FastAPI docs  -> http://localhost:8000/docs
   </section>
 </div>
 
-<footer><div class="wrap">Credit Risk Decision Engine · explainable, governed PD scoring · model version <span id="ver2"></span></div></footer>
+<footer><div class="wrap foot-cosmic">
+  <div class="foot-glow">Credit Risk Engine</div>
+  <p class="foot-tag">Explainable · calibrated · governed PD scoring — running entirely in your browser.</p>
+  <div class="foot-links">
+    <a data-view="score">Score applicant</a><a data-view="batch">Batch &amp; report</a>
+    <a data-view="monitoring">Monitoring</a><a data-view="governance">Governance</a><a data-view="how">How it works</a>
+  </div>
+  <div class="foot-copy">model version <span id="ver2"></span> · © 2026 · built for credit risk teams</div>
+</div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1201,12 +2377,14 @@ refreshModelOptions(); updateKeyStatus(); setPreset("middle");
     var auth=D.createElement("div"); auth.className="auth hidden"; auth.id="auth";
     auth.innerHTML='<button class="icon-btn auth-theme" id="auth-theme" title="Toggle theme">◐</button>'
       +'<div class="auth-card"><div class="auth-brand"><span class="dot"></span> Credit Risk Engine</div>'
-      +'<h1>Sign in to your workspace</h1><p class="auth-sub">Access decisioning, batch reports and model governance.</p>'
+      +'<div class="auth-eyebrow"><span class="pulse"></span> AI-native credit decisioning</div>'
+      +'<h1>Sign in to your workspace</h1><p class="auth-sub">Calibrated PD scoring, batch reports and model governance — explainable end to end.</p>'
       +'<form id="login-form" autocomplete="on"><label>Employer ID or company name</label>'
       +'<input class="full" id="login-id" placeholder="EMP001 or Acme Lending" autocomplete="username">'
       +'<label>Password</label><input class="full" id="login-pw" type="password" placeholder="••••••••" autocomplete="current-password">'
       +'<div class="auth-err" id="login-err"></div>'
       +'<button class="btn primary block" type="submit" style="margin-top:6px">Sign in</button></form>'
+      +'<div class="auth-feats"><span>⚡ ~6 ms / score</span><span>◎ Reason codes</span><span>🛡 Governed</span></div>'
       +'<div class="auth-demo">Demo logins (password <code>demo1234</code>): <b>EMP001</b> · <b>EMP002</b> · <b>EMP003</b></div></div>';
     D.body.appendChild(auth);
 
@@ -1279,9 +2457,9 @@ refreshModelOptions(); updateKeyStatus(); setPreset("middle");
     /* ---- auth ---- */
     function setUser(name,co){D.getElementById("s-name").textContent=name; D.getElementById("s-co").textContent=co;
       D.getElementById("s-avatar").textContent=(name||"A").charAt(0).toUpperCase();}
-    function openApp(u){setUser(u.name,u.co); auth.classList.add("hidden"); app.classList.remove("hidden");
+    function openApp(u){var lp=D.getElementById("lp"); if(lp)lp.style.display="none"; setUser(u.name,u.co); auth.classList.add("hidden"); app.classList.remove("hidden");
       show((location.hash||"").replace("#","")||"overview");}
-    function logout(){try{localStorage.removeItem("cre_user");}catch(e){} app.classList.add("hidden"); auth.classList.remove("hidden"); D.getElementById("login-pw").value="";}
+    function logout(){try{localStorage.removeItem("cre_user");}catch(e){} app.classList.add("hidden"); D.getElementById("login-pw").value=""; var lp=D.getElementById("lp"); if(lp&&lp.children.length){lp.style.display="block"; window.scrollTo(0,0);} else {auth.classList.remove("hidden");}}
     D.getElementById("login-form").addEventListener("submit",function(e){
       e.preventDefault();
       var id=D.getElementById("login-id").value.trim(), pw=D.getElementById("login-pw").value, err=D.getElementById("login-err");
@@ -1298,8 +2476,16 @@ refreshModelOptions(); updateKeyStatus(); setPreset("middle");
     D.getElementById("auth-theme").addEventListener("click",function(){ if(window.setTheme) setTheme(D.documentElement.getAttribute("data-theme")==="dark"?"light":"dark"); });
 
     var saved=null; try{saved=JSON.parse(localStorage.getItem("cre_user")||"null");}catch(e){}
-    if(saved&&saved.name) openApp(saved); else auth.classList.remove("hidden");
+    window.__cre={enterAuth:function(){var lp=D.getElementById("lp"); if(lp)lp.style.display="none"; auth.classList.remove("hidden");},
+      openAppDirect:function(){if(saved&&saved.name){openApp(saved);} else {var lp=D.getElementById("lp"); if(lp)lp.style.display="none"; auth.classList.remove("hidden");}}};
   }catch(err){ console.error("shell error",err); D.documentElement.style.visibility="visible"; }
+})();
+</script>
+<script>
+(function(){var lp=document.getElementById("lp"),auth=document.getElementById("auth");
+  if(!lp||!lp.children.length){if(auth)auth.classList.remove("hidden");return;}
+  lp.addEventListener("click",function(e){var t=e.target.closest("[data-go]");if(!t)return;e.preventDefault();
+    if(window.__cre){if(t.getAttribute("data-go")==="app")window.__cre.openAppDirect();else window.__cre.enterAuth();}});
 })();
 </script>
 <script type="text/plain" id="sample-clean">loan_amount,annual_income,employment_length,debt_to_income,credit_utilization,num_delinquencies_2y,num_open_accounts,credit_history_length,num_recent_inquiries,loan_term_months,interest_rate,home_ownership_code
